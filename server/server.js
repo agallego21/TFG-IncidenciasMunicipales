@@ -15,7 +15,7 @@ const User = require('./model/user.model.js')
 // CORS config
 const cors = require('cors')
 let corsOptions = {
-   origin : ['http://localhost:3000'],
+   origin : ['http://localhost:5173'],
 }
 app.use(cors(corsOptions))
 
