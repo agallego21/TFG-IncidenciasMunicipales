@@ -1,5 +1,4 @@
 import React from "react";
-import "./Header.css";
 import logoAyuntamiento from "../assets/images/logoAyuntamiento.png"
 
 export default function Header() {
