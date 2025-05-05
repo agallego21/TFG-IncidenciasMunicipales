@@ -1,0 +1,42 @@
+[{
+    "idIncidencia": 1,
+    "idAyuntamiento": 1,
+    "idUsuarioRegistro": 3,
+    "fechaRegistro": "2025-05-03",
+    "titulo": "Farola rota en el parque de Arriaga",
+    "descripcion": "En el parque de Arriaga, en la entrada desde la calle Paraguay, hay una farola que está rota",
+    "coordenadas": "",
+    "direccion": "",
+    "tipoIncidencia": "1",
+    "estado": "1",
+    "imagenes": [],
+    "respuesta": ""
+  },
+  {
+    "idIncidencia": 1,
+    "idAyuntamiento": 1,
+    "idUsuarioRegistro": 3,
+    "fechaRegistro": "2025-04-17",
+    "titulo": "Banco en mal estado",
+    "descripcion": "En la plaza Catalunya hay un banco que está roto, impidiendo sentarse y siendo un peligro para niños que juegan en la zona",
+    "coordenadas": "",
+    "direccion": "",
+    "tipoIncidencia": "5",
+    "estado": "1",
+    "imagenes": [],
+    "respuesta": ""
+  },
+  {
+    "idIncidencia": 1,
+    "idAyuntamiento": 1,
+    "idUsuarioRegistro": 3,
+    "fechaRegistro": "2025-04-27",
+    "titulo": "Contenedor de basura desbordado",
+    "descripcion": "El contenedor de basura está desbordado y los vecinos tenemos que dejar la basura en el suelo. Ruego que lo subsanen cuanto antes",
+    "coordenadas": "",
+    "direccion": "",
+    "tipoIncidencia": "2",
+    "estado": "1",
+    "imagenes": [],
+    "respuesta": ""
+  }]

@@ -1,0 +1,40 @@
+[{
+    "idUsuario": 1,
+    "nombre": "Administrador",
+    "apellidos": "General del Sistema",
+    "email": "admin@admin.com",
+    "password": "admin",
+    "tipoUsuario": "0",
+    "idAyuntamiento": "",
+    "avatar": ""
+  },
+  {
+    "idUsuario": 11,
+    "nombre": "Administrador",
+    "apellidos": "Ayuntamiento de Vitoria-Gasteiz",
+    "email": "admin@vitoriagasteiz.com",
+    "password": "admin",
+    "tipoUsuario": "1",
+    "idAyuntamiento": "1",
+    "avatar": ""
+  },
+  {
+    "idUsuario": 12,
+    "nombre": "Personal",
+    "apellidos": "Ayuntamiento de Vitoria-Gasteiz",
+    "email": "personal@vitoriagasteiz.com",
+    "password": "admin",
+    "tipoUsuario": "2",
+    "idAyuntamiento": "1",
+    "avatar": ""
+  },
+  {
+    "idUsuario": 13,
+    "nombre": "Ciudadano",
+    "apellidos": "Ayuntamiento de Vitoria-Gasteiz",
+    "email": "ciudadano@vitoriagasteiz.com",
+    "password": "admin",
+    "tipoUsuario": "3",
+    "idAyuntamiento": "1",
+    "avatar": ""
+  }]
