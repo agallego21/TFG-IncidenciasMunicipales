@@ -25,14 +25,11 @@ app.use(cors(corsOptions))
 app.get('/', (req, res) => res.send('<h1>SERVER STARTED</h1>'))
 
 //Usuarios
+
 app.get('/usuarios', (req, res) => {
-	const { idUsuario, idAyuntamiento, email } = req.query;
+	const {idAyuntamiento, email } = req.query;
 
 	let filtro = {};
-  
-	if (idUsuario) {
-	  filtro.idUsuario = idUsuario;
-	}
   
 	if (idAyuntamiento) {
 	  filtro.idAyuntamiento = idAyuntamiento;
@@ -46,42 +43,12 @@ app.get('/usuarios', (req, res) => {
 		.find(filtro)
 		.then(allUsers => res.json(allUsers))
 })
-app.get('/api/usuarios', (req, res) => {
-	Usuario
-		.find()
-		.then(allUsers => res.json(allUsers))
-})
 
-app.get('/api/usuarios/:idUsuario', (req, res) => {
-	
-	const {idUsuario} = req.params
-	Usuario
-		.findById(idUsuario)
-		.then(usuario => res.json(usuario))
-})
-
-app.get('/api/usuarios/id/:idUsuario', (req, res) => {
-	
+app.get('/usuarios/:idUsuario', (req, res) => {
 	const {idUsuario} = req.params
 	Usuario
 		.findOne({'idUsuario': idUsuario})
 		.then(usuario => res.json(usuario))
-})
-
-app.get('/api/usuarios/email/:email', (req, res) => {
-	
-	const {email} = req.params
-	Usuario
-		.findOne({'email': email})
-		.then(usuario => res.json(usuario))
-})
-
-app.get('/api/usuarios/ayuntamiento/:idAyuntamiento', (req, res) => {
-	
-	const {idAyuntamiento} = req.params
-	Usuario
-		.find({'idAyuntamiento': idAyuntamiento})
-		.then(usuarios => res.json(usuarios))
 })
 
 //Ayuntamientos
