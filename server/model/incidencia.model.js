@@ -1,16 +1,23 @@
 const mongoose = require('mongoose')
 
-const usuarioSchema = mongoose.Schema({
-	idUsuario: Number,
-	nombre: String,
-	apellidos: String,
-	email: String,
-	password: String,
-	tipoUsuario: Number, 
+const incidenciaSchema = mongoose.Schema({
 	idAyuntamiento: Number,
-	avatar: String
+	idIncidencia: Number,
+	idUsuarioRegistro: Number,
+	fechaRegistro: { type: Date, default: Date.now },
+	titulo: { type: String, required: true },
+ 	descripcion: { type: String, required: true },
+	coordenadas: {
+   		lat: { type: Number, required: true },
+		lng: { type: Number, required: true }
+	},
+	direccion: { type: String },
+	tipoIncidencia: { type: Number },
+	estado: { type: Number},
+	fechaResolucion: { type: Date },
+	textoResolucion: { type: String }
 })
 
-const Usuario = mongoose.model('usuario', usuarioSchema)
+const Incidencia = mongoose.model('incidencia', incidenciaSchema)
 
-module.exports = Usuario
+module.exports = Incidencia

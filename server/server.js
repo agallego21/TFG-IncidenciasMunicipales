@@ -1,5 +1,4 @@
 const express = require('express')
-
 const app = express()
 
 //DB Connecton
@@ -12,6 +11,7 @@ mongoose
 //Model
 const Usuario = require('./model/usuario.model.js')
 const Ayuntamiento = require('./model/ayuntamiento.model.js')
+const Incidencia = require('./model/incidencia.model.js')
 
 // CORS config
 const cors = require('cors')
@@ -20,51 +20,20 @@ let corsOptions = {
 }
 app.use(cors(corsOptions))
 
+app.use(express.json())
 
 //Routing
 app.get('/', (req, res) => res.send('<h1>SERVER STARTED</h1>'))
 
-//Usuarios
+/*********Archivos que definen las rutas de cada elemento*** */
+// Rutas Usuario
+const rutasUsuarios = require('./routes/usuario.routes');
+app.use('/usuarios', rutasUsuarios);
 
-app.get('/usuarios', (req, res) => {
-	const {idAyuntamiento, email } = req.query;
+// Rutas Incidencia
+const rutasIncidencias = require('./routes/incidencias.routes');
+app.use('/incidencias', rutasIncidencias);
 
-	let filtro = {};
-  
-	if (idAyuntamiento) {
-	  filtro.idAyuntamiento = idAyuntamiento;
-	}
-
-	if (email) {
-		filtro.email = email;
-	  }
-
-	Usuario
-		.find(filtro)
-		.then(allUsers => res.json(allUsers))
-})
-
-app.get('/usuarios/:idUsuario', (req, res) => {
-	const {idUsuario} = req.params
-	Usuario
-		.findOne({'idUsuario': idUsuario})
-		.then(usuario => res.json(usuario))
-})
-
-//Ayuntamientos
-app.get('/api/ayuntamientos', (req, res) => {
-	Ayuntamiento
-		.find()
-		.then(allAyuntamientos => res.json(allAyuntamientos))
-})
-
-app.get('/api/ayuntamientos/:idAyuntamiento', (req, res) => {
-	
-	const {idAyuntamiento} = req.params
-	Ayuntamiento
-		.findById(idAyuntamiento)
-		.then(ayuntamiento => res.json(ayuntamiento))
-})
 
 //Arranque del server
 app.listen(5005, ()=>console.log('Server started'))
