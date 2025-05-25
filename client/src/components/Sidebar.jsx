@@ -34,7 +34,7 @@ export default function Sidebar({ visible, onClose }) {
 
   return (
  <aside
-      className={`sidebar p-3 bg-light position-fixed start-0 h-100 overflow-auto shadow ${
+      className={`sidebar p-3 position-fixed start-0 h-100 overflow-auto shadow ${
         visible ? "d-block top-0" : "d-none"
       } d-md-block`}
       style={{ width: "320px", zIndex: 1050 }}

@@ -1,11 +1,29 @@
 [{
     "idAyuntamiento": 1,
     "municipio": "Vitoria-Gasteiz",
+    "centro": {
+      "lat": 42.8465,
+      "lng": -2.6716
+    },
     "zona": ""
   },
   {
-    "idAyuntamiento": 1,
+    "idAyuntamiento": 2,
     "municipio": "Madrid",
+    "centro": {
+      "lat": 40.4168,
+      "lng": -3.7038
+    },
+    "zona": ""
+  }
+  ,
+  {
+    "idAyuntamiento": 3,
+    "municipio": "Eskoriatza",
+    "centro": {
+      "lat": 43.016641,
+      "lng": -2.527001
+    },
     "zona": ""
   }
 ]

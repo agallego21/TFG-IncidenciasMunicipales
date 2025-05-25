@@ -55,6 +55,13 @@
   height: 40px;
 }
 
+.loading {
+  font-size: 1.5rem;
+  padding: 2rem;
+  text-align: center;
+  color: #333;
+}
+
 /** MapView**/
 .map-view {
   width: 100%;
@@ -70,8 +77,8 @@
 /**Sidebar**/
 .sidebar {
   width: 320px;
-  max-height: 100vh;
-  background-color: #90C67C;
+  /*max-height: 100vh;*/
+  background-color: #67AE6E;
   padding: 1rem;
   border-right: 1px solid #ccc;
 }

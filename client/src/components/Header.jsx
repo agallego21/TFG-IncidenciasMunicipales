@@ -1,11 +1,16 @@
 import React, { useContext } from "react";
-import { UserContext } from "../context/UserContext";
 import { FaBars } from "react-icons/fa";
 
-import logoAyuntamiento from "../assets/images/logoAyuntamiento.png"
+import { UserContext } from "../context/UserContext";
+import { useAyuntamiento } from "../context/AyuntamientoContext";
 
 export default function Header({ onLoginClick, onToggleSidebar }) {
   const { usuario } = useContext(UserContext);
+  const { ayuntamiento } = useAyuntamiento();
+
+  const logoURL = ayuntamiento
+    ? `/assets/logos/${ayuntamiento.idAyuntamiento}.jpg`
+    : null;
 
   return (
     <header className="header d-flex justify-content-between align-items-center p-2 text-white">
@@ -29,10 +34,17 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
         </button></p>
       )}
 
+      {ayuntamiento ? (
       <div className="header-info">
-        <img src={logoAyuntamiento} alt="Logo Ayuntamiento" className="logo" />
-        <span className="title">Ayuntamiento de TuCiudad</span>
+        <img src={logoURL} alt={`Logo Ayuntamiento de ${ayuntamiento.municipio}`} className="logo" />
+        <span className="title">Ayuntamiento de {ayuntamiento ? ayuntamiento.municipio : "..."}</span>
       </div>
+      ) : (
+      <div className="header-info">
+        <span className="title">&nbsp;</span>
+      </div>
+
+      )}
     </header>
   );
 }

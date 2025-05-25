@@ -7,6 +7,9 @@ import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
+import { useAyuntamiento } from "../context/AyuntamientoContext";
+import { useUser } from "../context/UserContext";
+
 // Configuración del icono Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -15,12 +18,16 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-const center = [42.8467, -2.6716];
+//const center = [42.8467, -2.6716];
 
 function AddMarkerOnClick({ onAdd }) {
+  const { usuario } = useUser();
+  
   useMapEvents({
     click(e) {
-      onAdd(e.latlng);
+      if (usuario) {
+        onAdd(e.latlng);
+      }
     }
   });
   return null;
@@ -30,6 +37,14 @@ export default function MapView() {
   const [newIncidencia, setNewIncidencia] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [direccion, setDireccion] = useState("");
+
+  const { ayuntamiento } = useAyuntamiento();
+  const { usuario } = useUser();
+
+  // Por defecto un centro básico (ej. España) si config aún no está cargado
+  const center = ayuntamiento?.centro
+    ? [ayuntamiento.centro.lat, ayuntamiento.centro.lng]
+    : [40.4168, -3.7038]; // Madrid por defecto
 
   const [formData, setFormData] = useState({
     titulo: "",
@@ -111,7 +126,7 @@ const guardarIncidencia = async () => {
 
   return (
     <div className="map-view">
-      <MapContainer center={center} zoom={13} className="map-container" style={{ height: "500px" }}>
+      <MapContainer center={center} zoom={13} className="map-container" style={{ height: "98%" }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

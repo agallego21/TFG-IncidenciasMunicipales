@@ -27,8 +27,12 @@ app.get('/', (req, res) => res.send('<h1>SERVER STARTED</h1>'))
 
 /*********Archivos que definen las rutas de cada elemento*** */
 // Rutas Usuario
-const rutasUsuarios = require('./routes/usuario.routes');
+const rutasUsuarios = require('./routes/usuarios.routes');
 app.use('/usuarios', rutasUsuarios);
+
+// Rutas Ayuntamientos
+const rutasAyuntamientos = require('./routes/ayuntamientos.routes');
+app.use('/ayuntamientos', rutasAyuntamientos);
 
 // Rutas Incidencia
 const rutasIncidencias = require('./routes/incidencias.routes');
