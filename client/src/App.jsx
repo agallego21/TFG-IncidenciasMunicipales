@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import MapView from "./components/MapView";
@@ -11,21 +11,27 @@ import "./App.css";
 
 export default function App() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const { ayuntamiento } = useAyuntamiento();
-  
+  const { ayuntamiento, showLoginOnStart, setShowLoginOnStart } = useAyuntamiento();
+  const [showLogin, setShowLogin] = useState(false); // inicialízalo en false
+
+  useEffect(() => {
+    if (showLoginOnStart) {
+      setShowLogin(true);
+    }
+  }, [showLoginOnStart]);
+
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
   };
 
   const handleLogin = (credentials) => {
     console.log("Usuario identificado:", credentials);
-    /** TODO  axios.post(...)*/
     setShowLogin(false);
+    setShowLoginOnStart(false); // cerrar si estaba en modo admin general
   };
 
-  // Mostrar carga si aún no se ha cargado la configuración del ayuntamiento
-  if (!ayuntamiento) {
+  // Si se ha indicado un idAyuntamiento, espera a que se cargue.
+  if (!ayuntamiento && !showLoginOnStart) {
     return <div className="loading">Cargando configuración del ayuntamiento...</div>;
   }
 
@@ -33,7 +39,7 @@ export default function App() {
     <div className="app-container">
       <Header onToggleSidebar={toggleSidebar} onLoginClick={() => setShowLogin(true)} />
       <div className="main-content">
-         <Sidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
+        <Sidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
         <MapView />
       </div>
       <LoginModal

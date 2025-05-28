@@ -7,12 +7,12 @@ import { AyuntamientoProvider } from "./context/AyuntamientoContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-     <BrowserRouter>
-    <UserProvider>
-      <AyuntamientoProvider>
-        <App />
-      </AyuntamientoProvider>
-    </UserProvider>
+    <BrowserRouter>
+      <UserProvider>
+        <AyuntamientoProvider>
+          <App />
+        </AyuntamientoProvider>
+      </UserProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
