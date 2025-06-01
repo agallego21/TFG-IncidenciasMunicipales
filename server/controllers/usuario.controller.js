@@ -27,13 +27,39 @@ exports.obtenerUsuarioPorId = async (req, res) => {
 };
 
 exports.crearUsuario = async (req, res) => {
-  const { idUsuario, nombre, apellidos, email, departamento } = req.body;
+  const {
+    nombre,
+    apellidos,
+    email,
+    password,
+    tipoUsuario,
+    idAyuntamiento,
+    imagen,
+    estado
+  } = req.body;
 
-  try {
-    const existe = await Usuario.findOne({ idUsuario });
-    if (existe) return res.status(400).json({ error: 'idUsuario ya existe' });
+  try { //Validación de que no exista previamente
+    const existe = await Usuario.findOne({ email });
+    if (existe) {
+      return res.status(400).json({ error: 'Ya existe el usuario dado de alta con esa dirección de email' });
+    }
 
-    const nuevoUsuario = new Usuario({ idUsuario, nombre, apellidos, email, departamento });
+    //REcuperamos el valor del idUsuario
+    const idUsuarioNuevo = await getSiguienteValorSecuencia('usuarios', db);
+
+    // Creamos el nuevo usuario con todos los campos
+    const nuevoUsuario = new Usuario({
+      idUsuario: idUsuarioNuevo,
+      nombre,
+      apellidos,
+      email,
+      password,
+      tipoUsuario,
+      idAyuntamiento,
+      imagen: imagen || null,
+      estado: estado ?? 1 //ACtivo si no se especifica otro valor
+    });
+
     await nuevoUsuario.save();
     res.status(201).json(nuevoUsuario);
   } catch (error) {

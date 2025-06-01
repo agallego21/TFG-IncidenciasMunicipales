@@ -1,22 +1,59 @@
 const mongoose = require('mongoose')
 
 const incidenciaSchema = mongoose.Schema({
-	idAyuntamiento: Number,
-	idIncidencia: Number,
-	idUsuarioRegistro: Number,
-	fechaRegistro: { type: Date, default: Date.now },
-	titulo: { type: String, required: true },
- 	descripcion: { type: String, required: true },
-	coordenadas: {
-   		lat: { type: Number, required: true },
-		lng: { type: Number, required: true }
+	idIncidencia: {
+		type: String,
+		required: true,
+		unique: true
 	},
-	direccion: { type: String },
-	tipoIncidencia: { type: Number },
-	estado: { type: Number},
-	fechaResolucion: { type: Date },
-	textoResolucion: { type: String }
-})
+	idUsuario: {
+		type: String,
+		required: true // Relacionado con usuario.idUsuario
+	},
+	titulo: {
+		type: String,
+		required: true,
+		trim: true
+	},
+	descripcion: {
+		type: String,
+		trim: true
+	},
+	fechaRegistro: {
+		type: Date,
+		default: Date.now
+	},
+	puntoLongitud: {
+		type: String,
+		default: null
+	},
+	puntoLatitud: {
+		type: String,
+		default: null
+	},
+	direccion: {
+		type: String,
+		trim: true,
+		default: null
+	},
+	tipoIncidencia: {
+		type: Number,
+		required: true
+	},
+	estado: {
+		type: Number,
+		default: 0
+	},
+	fechaResolucion: {
+		type: Date,
+		default: null
+	},
+	textoResolucion: {
+		type: String,
+		trim: true,
+		default: null
+	}
+});
 
 const Incidencia = mongoose.model('incidencia', incidenciaSchema)
 

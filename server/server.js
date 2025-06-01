@@ -1,12 +1,12 @@
 const express = require('express')
 const app = express()
 
-//DB Connecton
+//Conexión a la BD
 const mongoose = require('mongoose')
 mongoose
-	//.connect('mongodb+srv://testing:Test_24!.@dbcluster0.2jre5ex.mongodb.net/testingDB')
 	.connect('mongodb+srv://agallego:TFG_25!.@cluster0.jq9m4ia.mongodb.net/TFG_GestIncidencias_db')
 	.then(() => console.log('DB Connected'))
+	.catch(err => console.error(err));
 	
 //Model
 const Usuario = require('./model/usuario.model.js')

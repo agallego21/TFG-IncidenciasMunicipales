@@ -26,3 +26,16 @@ router.get('/:idAyuntamiento', (req, res) => {
 })
 
 module.exports = router;
+
+/** PROBAR ESTO
+const express = require('express');
+const router = express.Router();
+const controlador = require('../controllers/ayuntamientoController');
+
+router.post('/', controlador.crearAyuntamiento);
+router.get('/', controlador.obtenerAyuntamientos);
+router.get('/:id', controlador.obtenerAyuntamientoPorId);
+router.put('/:id', controlador.actualizarAyuntamiento);
+router.delete('/:id', controlador.eliminarAyuntamiento);
+
+module.exports = router;**/
