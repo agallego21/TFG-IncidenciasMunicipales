@@ -1,13 +1,12 @@
 const express = require('express')
+const path = require('path');
+
 const app = express()
 
 //Conexión a la BD
-const mongoose = require('mongoose')
-mongoose
-	.connect('mongodb+srv://agallego:TFG_25!.@cluster0.jq9m4ia.mongodb.net/TFG_GestIncidencias_db')
-	.then(() => console.log('DB Connected'))
-	.catch(err => console.error(err));
-	
+const crearConexionBD = require('./config/conexionBD');
+crearConexionBD();
+
 //Model
 const Usuario = require('./model/usuario.model.js')
 const Ayuntamiento = require('./model/ayuntamiento.model.js')
@@ -38,6 +37,12 @@ app.use('/ayuntamientos', rutasAyuntamientos);
 const rutasIncidencias = require('./routes/incidencias.routes');
 app.use('/incidencias', rutasIncidencias);
 
+// Rutas imágenes
+const rutasImagenes = require('./routes/imagenes.routes');
+app.use('/imagenes', rutasImagenes);
+
+// Carpeta estática
+app.use(express.static(path.join(__dirname, 'public')));
 
 //Arranque del server
 app.listen(5005, ()=>console.log('Server started'))

@@ -1,11 +1,10 @@
-const Ayuntamiento = require('../models/Ayuntamiento');
+const Ayuntamiento = require('../model/ayuntamiento.model');
 const { getSiguienteValorSecuencia } = require('../utils/secuencias');
-const db = require('../db'); // tu conexión a MongoDB
 
 // Crear un nuevo ayuntamiento
 exports.crearAyuntamiento = async (req, res) => {
   try {
-    const nuevoId = await getSiguienteValorSecuencia('ayuntamientos', db);
+    const nuevoId = await getSiguienteValorSecuencia('ayuntamientos');
 
     const nuevoAyuntamiento = new Ayuntamiento({
       idAyuntamiento: nuevoId,
@@ -36,7 +35,7 @@ exports.obtenerAyuntamientos = async (req, res) => {
 // Obtener un ayuntamiento por su ID interno (idAyuntamiento)
 exports.obtenerAyuntamientoPorId = async (req, res) => {
   try {
-    const ayuntamiento = await Ayuntamiento.findOne({ idAyuntamiento: req.params.id });
+    const ayuntamiento = await Ayuntamiento.findOne({ idAyuntamiento: req.params.idAyuntamiento });
 
     if (!ayuntamiento) {
       return res.status(404).json({ error: 'Ayuntamiento no encontrado' });

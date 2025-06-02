@@ -1,0 +1,26 @@
+[
+  {
+    "idTipo": 1,
+    "tipoIncidencia": "Mobiliario urbano"
+  },
+  {
+    "idTipo": 2,
+    "tipoIncidencia": "Alumbrado"
+  },
+  {
+    "idTipo": 3,
+    "tipoIncidencia": "Parques y jardines"
+  },
+  {
+    "idTipo": 4,
+    "tipoIncidencia": "Basuras y limpieza"
+  },
+  {
+    "idTipo": 5,
+    "tipoIncidencia": "Movilidad y tráfico"
+  },
+  {
+    "idTipo": 9,
+    "tipoIncidencia": "Otros"
+  }
+]

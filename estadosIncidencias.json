@@ -1,0 +1,18 @@
+[
+  {
+    "idEstado": 0,
+    "estadoIncidencia": "Borrador"
+  },
+  {
+    "idEstado": 1,
+    "estadoIncidencia": "Registrada"
+  },
+  {
+    "idEstado": 2,
+    "estadoIncidencia": "En curso"
+  },
+  {
+    "idEstado": 3,
+    "estadoIncidencia": "Solucionada"
+  }
+]

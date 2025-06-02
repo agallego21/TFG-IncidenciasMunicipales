@@ -1,0 +1,18 @@
+[
+  {
+    "idTipo": 0,
+    "tipoUsuario": "Administrador General"
+  },
+  {
+    "idTipo": 1,
+    "tipoUsuario": "Administrador de Ayuntamiento"
+  },
+  {
+    "idTipo": 2,
+    "tipoUsuario": "Técnico Municipal"
+  },
+  {
+    "idTipo": 3,
+    "tipoUsuario": "Ciudadano Registrado"
+  }
+]

@@ -2,22 +2,22 @@
  * Obtiene el siguiente valor de una secuencia desde la colección "secuencias".
  * Si la secuencia no existe, la crea automáticamente con valor inicial 1.
  */
-const getSiguienteValorSecuencia = async (tipoSecuencia, db) => {
-  if (!tipoSecuencia) throw new Error('Se debe especificar un tipo de secuencia');
-  if (!db) throw new Error('Conexión a la base de datos no proporcionada');
+const Secuencia = require('../model/secuencia.model');
 
+const getSiguienteValorSecuencia = async (tipo) => {
   try {
-    const resultado = await db.collection('secuencias').findOneAndUpdate(
-      { tipoSecuencia },
+    const resultado = await Secuencia.findOneAndUpdate(
+      { tipoSecuencia: tipo },
       { $inc: { valor: 1 } },
-      { returnDocument: 'after', upsert: true }
+      { new: true, upsert: true } // upsert por si no existe aún
     );
 
-    return resultado.value.valor;
+    return resultado.valor;
   } catch (error) {
-    console.error(`Error al obtener secuencia para tipo "${tipoSecuencia}":`, error);
-    throw new Error('No se pudo obtener el siguiente valor de la secuencia');
+    throw new Error('Error al obtener la siguiente secuencia: ' + error.message);
   }
 };
 
-module.exports = { getSiguienteValorSecuencia };
+module.exports = {
+  getSiguienteValorSecuencia
+};

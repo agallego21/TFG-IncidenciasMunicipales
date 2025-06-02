@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const tiposIncidenciaSchema = mongoose.Schema({
-   idEstado: {
+   idTipo: {
     type: Number,
     required: true,
     unique: true

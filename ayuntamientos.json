@@ -1,29 +1,57 @@
-[{
+[
+  {
+    "coordenadasCentro": {
+      "type": "Point",
+      "coordinates": [-2.6724, 42.8468]
+    },
+    "_id": "683e0e1ee52853718b8afafe",
     "idAyuntamiento": 1,
     "municipio": "Vitoria-Gasteiz",
-    "centro": {
-      "lat": 42.8465,
-      "lng": -2.6716
-    },
-    "zona": ""
+    "idImagen": null,
+    "zona": null,
+    "direccionPostal": "Plaza España, 1, 01001 Vitoria-Gasteiz, Álava",
+    "correoElectronico": "ayuntamiento@vitoria-gasteiz.org",
+    "telefono": "+34 945 161 616",
+    "fax": "+34 945 161 617",
+    "fechaAlta": "2025-06-02T20:48:30.376Z",
+    "fechaModif": "2025-06-02T20:48:30.387Z",
+    "estado": 1,
+    "__v": 0
   },
   {
+    "coordenadasCentro": {
+      "type": "Point",
+      "coordinates": [-3.7038, 40.4168]
+    },
+    "_id": "683e0eace52853718b8afb0a",
     "idAyuntamiento": 2,
     "municipio": "Madrid",
-    "centro": {
-      "lat": 40.4168,
-      "lng": -3.7038
-    },
-    "zona": ""
-  }
-  ,
+    "zona": "Comunidad de Madrid",
+    "direccionPostal": "Plaza de Cibeles, 1, 28014 Madrid",
+    "correoElectronico": "ayuntamiento@madrid.es",
+    "telefono": "+34 915 298 210",
+    "fax": "+34 915 298 211",
+    "fechaAlta": "2025-06-02T20:50:52.651Z",
+    "fechaModif": "2025-06-02T20:50:52.656Z",
+    "estado": 1,
+    "__v": 0
+  },
   {
+    "coordenadasCentro": {
+      "type": "Point",
+      "coordinates": [-2.5197, 43.0187]
+    },
+    "_id": "683e0f10e52853718b8afb11",
     "idAyuntamiento": 3,
     "municipio": "Eskoriatza",
-    "centro": {
-      "lat": 43.016641,
-      "lng": -2.527001
-    },
-    "zona": ""
+    "zona": "País Vasco",
+    "direccionPostal": "Aranburuzabala Kalea, 1, 20540 Eskoriatza, Gipuzkoa",
+    "correoElectronico": "udala@eskoriatza.eus",
+    "telefono": "+34 943 714 070",
+    "fax": "+34 943 714 071",
+    "fechaAlta": "2025-06-02T20:52:32.291Z",
+    "fechaModif": "2025-06-02T20:52:32.293Z",
+    "estado": 1,
+    "__v": 0
   }
 ]

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const tiposUsuarioSchema = mongoose.Schema({
-   idEstado: {
+   idTipo: {
     type: Number,
     required: true,
     unique: true

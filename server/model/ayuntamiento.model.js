@@ -13,17 +13,18 @@ const ayuntamientoSchema = mongoose.Schema({
 	},
 	idImagen: {
 		type: mongoose.Schema.Types.ObjectId, // Referencia al _id de la imagen
-		ref: 'Imagen',
-		required: true
+		ref: 'Imagen'
 	},
-	centroLatitud: {
-		type: String,
-		required: true,
-	},
-	centroLongitud: {
-		type: String,
-		default: null,
-		required: true,
+	coordenadasCentro: {
+		type: {
+			type: String,
+			enum: ['Point'],
+			required: true
+		},
+		coordinates: {
+			type: [Number], // [longitud, latitud]
+			required: true
+		}
 	},
 	zona: {
 		type: String,
@@ -40,11 +41,11 @@ const ayuntamientoSchema = mongoose.Schema({
 		default: null
 	},
 	telefono: {
-		type: Number,
+		type: String,
 		default: null
 	},
 	fax: {
-		type: Number,
+		type: String,
 		default: null
 	},
 	fechaAlta: {

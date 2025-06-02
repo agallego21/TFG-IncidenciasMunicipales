@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 import L from "leaflet";
-import axios from 'axios';
-import { Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
+import { useAyuntamiento } from "../context/AyuntamientoContext";
+import { useUser } from "../context/UserContext";
+import IncidenciaModal from "./IncidenciaModal";
+
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-
-import { useAyuntamiento } from "../context/AyuntamientoContext";
-import { useUser } from "../context/UserContext";
 
 // Configuración del icono Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -18,16 +25,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Icono para la posición actual del usuario
 const userLocationIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/64/64113.png', // icono  tipo ubicación
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/64/64113.png",
   iconSize: [30, 30],
   iconAnchor: [15, 30],
   popupAnchor: [0, -30],
 });
 
-// Componente para centrar el mapa en una posición cuando cambie "center"
-function Recenter({ center , zoom}) {
+function Recenter({ center, zoom }) {
   const map = useMap();
   useEffect(() => {
     if (center) {
@@ -44,7 +49,7 @@ function AddMarkerOnClick({ onAdd }) {
       if (usuario) {
         onAdd(e.latlng);
       }
-    }
+    },
   });
   return null;
 }
@@ -53,27 +58,20 @@ export default function MapView() {
   const [newIncidencia, setNewIncidencia] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [direccion, setDireccion] = useState("");
-  const [posUsuario, setPosUsuario] = useState(null); // posición actual usuario
+  const [posUsuario, setPosUsuario] = useState(null);
 
   const { ayuntamiento } = useAyuntamiento();
   const { usuario } = useUser();
 
-  // Definimos el centro inicial:
-  // Si hay ayuntamiento usamos su centro,
-  // si no, usamos ubicación del usuario si ya se conoce,
-  // o Madrid por defecto.
-  const centroAyto = ayuntamiento?.centro
-    ? [ayuntamiento.centro.lat, ayuntamiento.centro.lng]
+  const centroAyto = ayuntamiento?.coordenadasCentro?.coordinates
+    ? [ayuntamiento.coordenadasCentro.coordinates[1], ayuntamiento.coordenadasCentro.coordinates[0]]
     : null;
 
-  const defaultCenter = centroAyto ?? (posUsuario ?? [40.4168, -3.7038]);
+  const [center, setCenter] = useState(centroAyto ?? [40.4168, -3.7038]);
+  const [mapZoom, setMapZoom] = useState(13);
 
-  const [center, setCenter] = useState(defaultCenter);
-  const [mapZoom, setMapZoom] = useState(13); // valor inicial por defecto
-
-  // Efecto para obtener la ubicación si no hay ayuntamiento (modo admin)
   useEffect(() => {
-    if (!centroAyto) {
+    if (!centroAyto && !posUsuario) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
@@ -87,9 +85,8 @@ export default function MapView() {
         );
       }
     }
-  }, [centroAyto]);
+  }, [centroAyto, posUsuario]);
 
-  // Función para centrar mapa en la ubicación actual (botón)
   const handleMiUbicacion = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -97,7 +94,7 @@ export default function MapView() {
           const coords = [pos.coords.latitude, pos.coords.longitude];
           setPosUsuario(coords);
           setCenter(coords);
-          setMapZoom(16); // por ejemplo, zoom más cercano
+          setMapZoom(16);
         },
         (err) => alert("No se pudo obtener la ubicación")
       );
@@ -105,8 +102,6 @@ export default function MapView() {
       alert("Geolocalización no soportada por el navegador");
     }
   };
-
-  // Resto de tus funciones de formulario e incidencias (igual)
 
   const handleAddIncidencia = (latlng) => {
     setNewIncidencia(latlng);
@@ -129,57 +124,11 @@ export default function MapView() {
   const handleClose = () => {
     setShowModal(false);
     setNewIncidencia(null);
-    setFormData({ titulo: "", descripcion: "", imagen: null });
     setDireccion("");
-  };
-
-  const [formData, setFormData] = useState({
-    titulo: "",
-    descripcion: "",
-    coordenadas: { lat: "", lng: "" },
-    direccion: "",
-    tipoIncidencia: 0,
-    estado: 0,
-    fechaResolucion: null,
-    textoResolucion: ""
-  });
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "imagen") {
-      setFormData({ ...formData, imagen: files[0] });
-    } else {
-      setFormData({ ...formData, [name]: value });
-    }
-  };
-
-  const guardarIncidencia = async () => {
-    try {
-      const incidenciaAGuardar = {
-        titulo: formData.titulo,
-        descripcion: formData.descripcion,
-        coordenadas: {
-          lat: newIncidencia.lat,
-          lng: newIncidencia.lng,
-        },
-        direccion: direccion,
-        tipoIncidencia: 0,
-        estado: 0,
-        fechaResolucion: null,
-        textoResolucion: "",
-      };
-
-      const respuesta = await axios.post('http://localhost:5005/incidencias', incidenciaAGuardar);
-      console.log('Incidencia guardada:', respuesta.data);
-      handleClose();
-    } catch (error) {
-      console.error('Error guardando incidencia:', error);
-    }
   };
 
   return (
     <div className="map-view" style={{ position: "relative" }}>
-      {/* Mostrar botón "Mi ubicación" solo si hay ayuntamiento */}
       {centroAyto && (
         <button
           onClick={handleMiUbicacion}
@@ -205,19 +154,12 @@ export default function MapView() {
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-
         <Recenter center={center} zoom={mapZoom} />
-
         <AddMarkerOnClick onAdd={handleAddIncidencia} />
 
-        {/* Marcador para ubicación actual usuario, si existe */}
         {posUsuario && (
-          <Marker position={posUsuario} icon={userLocationIcon}>
-            {/*<Popup>Tu ubicación actual</Popup>*/}
-          </Marker>
+          <Marker position={posUsuario} icon={userLocationIcon} />
         )}
-
-        {/* Marcador para nueva incidencia */}
         {newIncidencia && (
           <Marker position={newIncidencia}>
             <Popup>Nueva incidencia</Popup>
@@ -225,69 +167,12 @@ export default function MapView() {
         )}
       </MapContainer>
 
-      {/* Modal con formulario */}
-      <Modal show={showModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Nueva incidencia</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="formTitulo">
-              <Form.Label>Título</Form.Label>
-              <Form.Control
-                type="text"
-                name="titulo"
-                value={formData.titulo}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group controlId="formDescripcion" className="mt-3">
-              <Form.Label>Descripción</Form.Label>
-              <Form.Control
-                as="textarea"
-                name="descripcion"
-                rows={3}
-                value={formData.descripcion}
-                onChange={handleChange}
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mt-3">
-              <Form.Label>Ubicación</Form.Label>
-              <Form.Control
-                type="text"
-                value={
-                  newIncidencia
-                    ? `${newIncidencia.lat.toFixed(6)}, ${newIncidencia.lng.toFixed(6)}`
-                    : ""
-                }
-                readOnly
-              />
-            </Form.Group>
-
-            <Form.Group className="mt-3">
-              <Form.Label>Dirección</Form.Label>
-              <Form.Control type="text" value={direccion} readOnly />
-            </Form.Group>
-
-            <Form.Group controlId="formImagen" className="mt-3">
-              <Form.Label>Adjuntar imagen</Form.Label>
-              <Form.Control type="file" name="imagen" onChange={handleChange} />
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={guardarIncidencia}>
-            Registrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <IncidenciaModal
+        show={showModal}
+        onClose={handleClose}
+        latlng={newIncidencia}
+        direccion={direccion}
+      />
     </div>
   );
 }
