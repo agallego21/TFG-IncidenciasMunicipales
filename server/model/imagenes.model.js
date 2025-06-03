@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const imagenenesSchema = mongoose.Schema({
+const imagenesSchema = mongoose.Schema({
   nombreArchivo: {
     type: String,
     required: true
@@ -18,7 +18,7 @@ const imagenenesSchema = mongoose.Schema({
     default: Date.now
   }
 });
-const Imagen = mongoose.model('imagen', imagenesSchema)
+const Imagen = mongoose.model('imagen', imagenesSchema, 'imagenes')
 
 module.exports = Imagen
 

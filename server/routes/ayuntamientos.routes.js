@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+
+//Controlador de Ayuntamiento
 const controlador = require('../controllers/ayuntamiento.controller');
 
 router.post('/', controlador.crearAyuntamiento);

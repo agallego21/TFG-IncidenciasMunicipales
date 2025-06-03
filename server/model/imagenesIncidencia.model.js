@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const imagenenesIncidencia = mongoose.Schema({
+const imagenesIncidenciaSchema = mongoose.Schema({
   idIncidencia: {
     type: mongoose.Schema.Types.ObjectId, // Referencia al _id de la incidencia
     ref: 'Incidencia',
@@ -13,6 +13,6 @@ const imagenenesIncidencia = mongoose.Schema({
   }
 });
 
-const ImagenIncidencia = mongoose.model('imagenIncidencia', imagenesIncidenciaSchema)
+const ImagenIncidencia = mongoose.model('ImagenIncidencia', imagenesIncidenciaSchema, 'imagenesIncidencia')
 
 module.exports = ImagenIncidencia

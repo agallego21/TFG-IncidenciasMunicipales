@@ -1,35 +1,73 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Card, Button } from "react-bootstrap";
+import { Modal, Card, Button, Carousel } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
+
+import { useAyuntamiento } from "../context/AyuntamientoContext";
 
 export default function Sidebar({ visible, onClose }) {
   const [incidencias, setIncidencias] = useState([]);
+  const [tiposIncidencia, setTiposIncidencia] = useState([]);
+  const [estadosIncidencia, setEstadosIncidencia] = useState([]);
+  
+  const { ayuntamiento } = useAyuntamiento();
 
   useEffect(() => {
     const obtenerIncidencias = async () => {
       try {
-        const respuesta = await axios.get("http://localhost:5005/incidencias");
+        if (!ayuntamiento) return;  //No hay ayuntamiento seleccionado
+        const respuesta = await axios.get(`http://localhost:5005/incidencias/ayuntamiento/${ayuntamiento.idAyuntamiento}`);
         setIncidencias(respuesta.data);
       } catch (error) {
         console.error("Error al obtener incidencias:", error);
       }
     };
 
-    obtenerIncidencias();
-  }, []);
+    const obtenerTipos = async () => {
+      try {
+        const res = await axios.get("http://localhost:5005/tiposIncidencia");
+        setTiposIncidencia(res.data);
+      } catch (error) {
+        console.error("Error al obtener tipos de incidencia:", error);
+      }
+    };
 
-  const estadoComoTexto = (estado) => {
-    switch (estado) {
-      case 0:
-        return "Pendiente";
-      case 1:
-        return "En proceso";
-      case 2:
-        return "Resuelto";
-      default:
-        return "Desconocido";
+    const obtenerEstados = async () => {
+      try {
+        const res = await axios.get("http://localhost:5005/estadosIncidencia");
+        setEstadosIncidencia(res.data);
+      } catch (error) {
+        console.error("Error al obtener estados de incidencia:", error);
+      }
+    };
+
+    if (ayuntamiento) {
+      obtenerIncidencias();
+      obtenerTipos();
+      obtenerEstados();
     }
+
+  }, [ayuntamiento]);
+
+  // Función para obtener el nombre del tipo por idTipo
+  const getNombreTipo = (idTipo) => {
+    const tipo = tiposIncidencia.find((t) => t.idTipo === idTipo);
+    return tipo ? tipo.tipoIncidencia : "---";
+  };
+
+   // Función para obtener el nombre del estado por idEstado
+  const getNombreEstado = (idEstado) => {
+    const estado = estadosIncidencia.find((t) => t.idEstado === idEstado);
+    return estado ? estado.estadoIncidencia : "---";
+  };
+
+  const [showModal, setShowModal] = useState(false);
+  const [imagenesModal, setImagenesModal] = useState([]);
+
+  // Función para abrir modal con las imágenes de una incidencia
+  const abrirModalImagenes = (imagenes) => {
+    setImagenesModal(imagenes);
+    setShowModal(true);
   };
 
   return (
@@ -53,17 +91,51 @@ export default function Sidebar({ visible, onClose }) {
           <Card.Body>
             <Card.Title>{incidencia.titulo}</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">
-              Estado: {estadoComoTexto(incidencia.estado)}
+              Estado: {getNombreEstado(incidencia.estado)}
             </Card.Subtitle>
             <Card.Text>{incidencia.descripcion}</Card.Text>
-            {incidencia.direccion && (
-              <Card.Text className="text-muted small">
-                📍 {incidencia.direccion}
-              </Card.Text>
+            <Card.Text><strong>Tipo:</strong> {getNombreTipo(incidencia.tipoIncidencia)}</Card.Text>
+            <Card.Text className="text-muted small">📍 {incidencia.direccion}</Card.Text>
+            {incidencia.imagenes.length > 0 && (
+              <Button variant="outline-secondary" size="sm" onClick={() => abrirModalImagenes(incidencia.imagenes)}>
+                📷
+              </Button>
             )}
           </Card.Body>
         </Card>
       ))}
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Imágenes de la incidencia</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {imagenesModal.length === 1 ? (
+            <img
+              src={"http://localhost:5005/" + imagenesModal[0].url}
+              alt="Imagen incidencia"
+              className="img-fluid"
+            />
+          ) : (
+            <Carousel>
+              {imagenesModal.map((img) => (
+                <Carousel.Item key={img.id}>
+                  <img
+                    className="d-block w-100"
+                    src={"http://localhost:5005/" + img.url}
+                    alt={`Imagen incidencia ${img.id}`}
+                  />
+                </Carousel.Item>
+              ))}
+            </Carousel>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </aside>
   );
 }

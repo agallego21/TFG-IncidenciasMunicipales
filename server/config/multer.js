@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 // Configuración del almacenamiento
 const storage = multer.diskStorage({
@@ -8,6 +9,7 @@ const storage = multer.diskStorage({
     const carpetaDestino = path.join(__dirname, `../public/images/${tipo}`);
 
     // Crear carpeta si no existe
+    console.log("Carpeta destino:", carpetaDestino);
     fs.mkdirSync(carpetaDestino, { recursive: true });
     cb(null, carpetaDestino);
   },

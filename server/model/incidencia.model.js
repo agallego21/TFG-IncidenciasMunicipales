@@ -1,10 +1,9 @@
 const mongoose = require('mongoose')
 
 const incidenciaSchema = mongoose.Schema({
-	idIncidencia: {
+	idAyuntamiento: {
 		type: String,
-		required: true,
-		unique: true
+		required: true // Relacionado con ayuntamiento.idAyuntamiento
 	},
 	idUsuario: {
 		type: String,
@@ -42,7 +41,7 @@ const incidenciaSchema = mongoose.Schema({
 	},
 	estado: {
 		type: Number,
-		default: 0
+		default: 1
 	},
 	fechaResolucion: {
 		type: Date,

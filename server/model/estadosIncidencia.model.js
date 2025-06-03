@@ -12,6 +12,6 @@ const estadosIncidenciaSchema = mongoose.Schema({
     trim: true
   }
 });
-const EstadoIncidencia = mongoose.model('estadoIncidencia', estadosIncidenciaSchema)
+const EstadoIncidencia = mongoose.model('estadoIncidencia', estadosIncidenciaSchema, 'estadosIncidencia')
 
 module.exports = EstadoIncidencia

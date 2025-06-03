@@ -12,6 +12,6 @@ const tiposIncidenciaSchema = mongoose.Schema({
     trim: true
   }
 });
-const TipoIncidencia = mongoose.model('tipoIncidencia', tiposIncidenciaSchema)
+const TipoIncidencia = mongoose.model('tipoIncidencia', tiposIncidenciaSchema, 'tiposIncidencia')
 
 module.exports = TipoIncidencia

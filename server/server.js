@@ -41,6 +41,14 @@ app.use('/incidencias', rutasIncidencias);
 const rutasImagenes = require('./routes/imagenes.routes');
 app.use('/imagenes', rutasImagenes);
 
+//Rutas tiposIncidencia
+const tiposIncidenciaRoutes = require('./routes/tiposIncidencia.routes');
+app.use('/tiposIncidencia', tiposIncidenciaRoutes);
+
+//Rutas estadosIncidencia
+const estadosIncidenciaRoutes = require('./routes/estadosIncidencia.routes');
+app.use('/estadosIncidencia', estadosIncidenciaRoutes);
+
 // Carpeta estática
 app.use(express.static(path.join(__dirname, 'public')));
 
