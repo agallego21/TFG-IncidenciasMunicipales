@@ -1,34 +1,51 @@
+:root {
+  --color-primary: #328E6E; 
+  --color-card-bg: #A7D7C5;
+  --color-white: #ffffff;
+  --color-secondary: #67AE6E;
+  --color-bg-light: #F4F8F5;
+  --color-white: #FFFFFF;
+  --color-text: #1E1E1E;
+  --color-text-secondary: #6B7280;
+  --color-accent: #E1EEBC;
+  --color-hover: #F0F2F0;
+  --color-danger: #E74C3C;
+}
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .app-container {
+  padding-top: 80px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  height: 100vh;
 }
 
 .main-content {
+  flex: 1; /* que ocupe el resto del espacio disponible */
   display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-.main-content {
-  margin-left: 320px;
+  overflow: hidden; /* evita que el sidebar desborde */
 }
 
 /**Header**/
 .header {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  background-color: #67AE6E;
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 80px;
+  background-color: var(--color-primary);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+  color: var(--color-white);
 }
 
 .login-button {
-  background-color: white;
-  color: #328E6E;
+  background-color: var(--color-white);
+  color: var(--color-secondary);
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-weight: 600;
@@ -37,7 +54,7 @@
 }
 
 .login-button:hover {
-  background-color: #f3f4f6;
+  background-color: var(--color-hover);
 }
 
 .header-info {
@@ -64,14 +81,15 @@
 
 /** MapView**/
 .map-view {
-  width: 100%;
+  flex: 1;
   height: 100%;
+  position: relative;
 }
 
 .map-container {
   width: 100%;
   height: 100%;
-  min-height: 500px;
+  min-height: unset; /* opcional, si se usa flexbox no hace falta mínimo fijo */
 }
 
 .map-btn {
@@ -83,17 +101,55 @@
 
 /**Sidebar**/
 .sidebar {
-  width: 320px;
-  /*max-height: 100vh;*/
-  background-color: #67AE6E;
+  width: 400px;
+  background-color: var(--color-primary);
   padding: 1rem;
   border-right: 1px solid #ccc;
+  color: var(--color-white);
 }
 
 .sidebar-title {
   font-size: 1.125rem;
   font-weight: 600;
   margin-bottom: 1rem;
+}
+
+.sidebar .card {
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.filtros-container {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(6px);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn-filtrar {
+  background-color: #3b6a3f; /* verde oscuro */
+  color: white;
+  border: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  border-radius: 6px;
+}
+
+.btn-filtrar:hover,
+.btn-filtrar:focus {
+  background-color: #2e5131; /* verde aún más oscuro al pasar el mouse */
+  color: white;
+  box-shadow: 0 0 8px rgba(46, 81, 49, 0.6);
+}
+
+.custom-card {
+  background-color: var(--color-card-bg);
+  color: #1d2f2b;
+  border: none;
+  border-radius: 8px;
 }
 
 .incidencia-list {
@@ -103,7 +159,7 @@
 }
 
 .incidencia-item {
-  background-color: #E1EEBC;
+  background-color: var(--color-accent);
   padding: 0.5rem;
   border-radius: 6px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -112,14 +168,14 @@
 }
 
 .incidencia-item:hover {
-  background-color: white;
-}
-
-.incidencia-titulo {
-  font-weight: 500;
+  background-color: var(--color-white);
 }
 
 .incidencia-estado {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-secondary);
+}
+
+.incidencia-titulo {
+  font-weight: 500;
 }

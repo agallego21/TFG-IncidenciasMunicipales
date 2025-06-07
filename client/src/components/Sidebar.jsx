@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Modal, Card, Button, Carousel } from "react-bootstrap";
+import { Modal, Card, Button, Carousel, Form, Collapse } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
-
 import { useAyuntamiento } from "../context/AyuntamientoContext";
+import IncidenciaCard from "./IncidenciaCard";
 
 export default function Sidebar({ visible, onClose }) {
   const [incidencias, setIncidencias] = useState([]);
   const [tiposIncidencia, setTiposIncidencia] = useState([]);
   const [estadosIncidencia, setEstadosIncidencia] = useState([]);
-  
+  const [filtroMisIncidencias, setFiltroMisIncidencias] = useState(false);
+  const [filtroTipo, setFiltroTipo] = useState("");
+  const [filtroEstado, setFiltroEstado] = useState("");
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
+
   const { ayuntamiento } = useAyuntamiento();
 
   useEffect(() => {
     const obtenerIncidencias = async () => {
       try {
-        if (!ayuntamiento) return;  //No hay ayuntamiento seleccionado
+        if (!ayuntamiento) return;
         const respuesta = await axios.get(`http://localhost:5005/incidencias/ayuntamiento/${ayuntamiento.idAyuntamiento}`);
         setIncidencias(respuesta.data);
       } catch (error) {
@@ -46,16 +50,13 @@ export default function Sidebar({ visible, onClose }) {
       obtenerTipos();
       obtenerEstados();
     }
-
   }, [ayuntamiento]);
 
-  // Función para obtener el nombre del tipo por idTipo
   const getNombreTipo = (idTipo) => {
     const tipo = tiposIncidencia.find((t) => t.idTipo === idTipo);
     return tipo ? tipo.tipoIncidencia : "---";
   };
 
-   // Función para obtener el nombre del estado por idEstado
   const getNombreEstado = (idEstado) => {
     const estado = estadosIncidencia.find((t) => t.idEstado === idEstado);
     return estado ? estado.estadoIncidencia : "---";
@@ -64,20 +65,26 @@ export default function Sidebar({ visible, onClose }) {
   const [showModal, setShowModal] = useState(false);
   const [imagenesModal, setImagenesModal] = useState([]);
 
-  // Función para abrir modal con las imágenes de una incidencia
   const abrirModalImagenes = (imagenes) => {
     setImagenesModal(imagenes);
     setShowModal(true);
   };
 
+  const aplicarFiltros = () => {
+    // Aquí puedes aplicar filtros con llamadas al backend o localmente si ya tienes todas las incidencias
+  };
+
   return (
- <aside
-      className={`sidebar p-3 position-fixed start-0 h-100 overflow-auto shadow ${
-        visible ? "d-block top-0" : "d-none"
+    <aside
+      className={`sidebar p-3 position-fixed start-0 shadow ${
+        visible ? "d-block" : "d-none"
       } d-md-block`}
-      style={{ width: "320px", zIndex: 1050 }}
+      style={{
+        height: "calc(100vh - 60px)",
+        zIndex: 1050,
+        overflowY: "auto"
+      }}
     >
-      {/* Botón para cerrar en móvil */}
       <div className="d-flex justify-content-between align-items-center d-md-none mb-3">
         <h4 className="m-0">Incidencias</h4>
         <Button variant="light" onClick={onClose}>
@@ -85,24 +92,63 @@ export default function Sidebar({ visible, onClose }) {
         </Button>
       </div>
 
-      <h2 className="mb-4">Incidencias registradas</h2>
+      <h2 className="mb-3">Incidencias registradas</h2>
+
+      <div className="mb-3">
+        <Button variant="link" className="text-white" onClick={() => setMostrarFiltros(!mostrarFiltros)}>
+          {mostrarFiltros ? "Ocultar filtros" : "Mostrar filtros"}
+        </Button>
+        <Collapse in={mostrarFiltros}>
+          <div>
+          <div className="filtros-container">
+          <Form.Group className="mb-3">
+            <Form.Label className="text-white">Filtrar por</Form.Label>
+            <Form.Select
+              value={filtroMisIncidencias ? "mis" : "todas"}
+              onChange={(e) => setFiltroMisIncidencias(e.target.value === "mis")}
+            >
+              <option value="todas">Todas</option>
+              <option value="mis">Mis incidencias</option>
+            </Form.Select>
+          </Form.Group>
+            <Form.Group className="mt-2">
+              <Form.Label>Estado</Form.Label>
+              <Form.Select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
+                <option value="">Todos</option>
+                {estadosIncidencia.map((estado) => (
+                  <option key={estado.idEstado} value={estado.idEstado}>
+                    {estado.estadoIncidencia}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mt-2">
+              <Form.Label>Tipo</Form.Label>
+              <Form.Select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+                <option value="">Todos</option>
+                {tiposIncidencia.map((tipo) => (
+                  <option key={tipo.idTipo} value={tipo.idTipo}>
+                    {tipo.tipoIncidencia}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+            <Button className="mt-3 w-100 btn-filtrar" onClick={aplicarFiltros}>
+              Filtrar incidencias
+            </Button>
+          </div>
+          </div>
+        </Collapse>
+      </div>
+
       {incidencias.map((incidencia) => (
-        <Card key={incidencia._id} className="mb-3 shadow-sm">
-          <Card.Body>
-            <Card.Title>{incidencia.titulo}</Card.Title>
-            <Card.Subtitle className="mb-2 text-muted">
-              Estado: {getNombreEstado(incidencia.estado)}
-            </Card.Subtitle>
-            <Card.Text>{incidencia.descripcion}</Card.Text>
-            <Card.Text><strong>Tipo:</strong> {getNombreTipo(incidencia.tipoIncidencia)}</Card.Text>
-            <Card.Text className="text-muted small">📍 {incidencia.direccion}</Card.Text>
-            {incidencia.imagenes.length > 0 && (
-              <Button variant="outline-secondary" size="sm" onClick={() => abrirModalImagenes(incidencia.imagenes)}>
-                📷
-              </Button>
-            )}
-          </Card.Body>
-        </Card>
+        <IncidenciaCard
+          key={incidencia._id}
+          incidencia={incidencia}
+          getNombreEstado={getNombreEstado}
+          getNombreTipo={getNombreTipo}
+          onVerImagenes={abrirModalImagenes}
+        />
       ))}
 
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>

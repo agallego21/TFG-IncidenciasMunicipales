@@ -23,13 +23,13 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
       </button>
 
       {usuario ? (
-        <p><button className="login-button">
+        <p><button className="btn-filtrar">
           Desconectarse
         </button>
         &nbsp;<b>Hola, {usuario.nombre} {usuario.apellidos}!</b>
         </p>
       ) : (
-        <p><button className="login-button" onClick={onLoginClick}>
+        <p><button className="btn-filtrar" onClick={onLoginClick}>
           Identificarse
         </button></p>
       )}
