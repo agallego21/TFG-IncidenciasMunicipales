@@ -13,6 +13,7 @@
     "axios": "^1.9.0",
     "bootstrap": "^5.3.6",
     "leaflet": "^1.9.4",
+    "leaflet-color-markers": "^0.1.0",
     "multer": "^2.0.0",
     "react": "^19.0.0",
     "react-bootstrap": "^2.10.10",

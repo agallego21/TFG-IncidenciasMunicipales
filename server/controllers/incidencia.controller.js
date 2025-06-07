@@ -10,8 +10,6 @@ const crearIncidencia = async (req, res) => {
       idUsuario,
       titulo,
       descripcion,
-      puntoLatitud,
-      puntoLongitud,
       direccion,
       tipoIncidencia,
       estado,
@@ -19,13 +17,14 @@ const crearIncidencia = async (req, res) => {
       textoResolucion
     } = req.body;
 
+    const coordenadas = req.body.coordenadas ? JSON.parse(req.body.coordenadas) : null;
+
     const nuevaIncidencia = new Incidencia({
       idAyuntamiento,
       idUsuario,
       titulo,
       descripcion,
-      puntoLatitud,
-      puntoLongitud,
+      coordenadas,
       direccion,
       tipoIncidencia,
       estado,

@@ -87,11 +87,13 @@ const obtenerDireccion = async (lat, lng) => {
       data.append("titulo", formData.titulo);
       data.append("descripcion", formData.descripcion);
       data.append("tipoIncidencia", formData.tipoIncidencia);
-      data.append("puntoLatitud", latlng.lat);
-      data.append("puntoLongitud", latlng.lng);
       data.append("direccion", direccion);
 
-      //Para la subida de imágenes
+      data.append("coordenadas", JSON.stringify({
+        type: "Point",
+        coordinates: [latlng.lng, latlng.lat]
+      }));
+
       data.append("tipo", "incidencias");
 
       if (formData.imagen) {

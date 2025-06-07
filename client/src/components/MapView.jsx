@@ -1,17 +1,10 @@
-import React, { useState, useEffect } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
+import React, {useState, useEffect} from "react";
+import {MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents} from "react-leaflet";
 import L from "leaflet";
-import axios from "axios";
-import { useAyuntamiento } from "../context/AyuntamientoContext";
-import { useUser } from "../context/UserContext";
+import {useAyuntamiento} from "../context/AyuntamientoContext";
+import {useUser } from "../context/UserContext";
 import IncidenciaModal from "./IncidenciaModal";
+import { createSvgIcon } from '../utils/leafletIcons';
 
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
@@ -25,6 +18,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
+//Iconos incidencias
+const iconNegro = createSvgIcon('black');
+const iconAzul = createSvgIcon('blue');
+const iconVerde = createSvgIcon('green');
+const iconRojo = createSvgIcon('red');
+const iconGris = createSvgIcon('gray');
+
+
 const userLocationIcon = new L.Icon({
   iconUrl: "https://cdn-icons-png.flaticon.com/512/64/64113.png",
   iconSize: [30, 30],
@@ -34,11 +35,11 @@ const userLocationIcon = new L.Icon({
 
 function Recenter({ center, zoom }) {
   const map = useMap();
-  useEffect(() => {
-    if (center) {
-      map.setView(center, zoom ?? map.getZoom());
-    }
-  }, [center, map]);
+    useEffect(() => {
+      if (center) {
+        map.setView(center, zoom ?? map.getZoom());
+      }
+    }, [center, zoom, map]);
   return null;
 }
 
@@ -54,7 +55,17 @@ function AddMarkerOnClick({ onAdd }) {
   return null;
 }
 
-export default function MapView() {
+function obtenerIconoPorEstado(estado) {
+  switch(estado) {
+    case 0: return iconNegro;
+    case 1: return iconRojo;
+    case 2: return iconAzul;
+    case 3: return iconVerde;
+    default: return iconGris;
+  }
+}
+
+export default function MapView({incidencias}) {
   const [newIncidencia, setNewIncidencia] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [direccion, setDireccion] = useState("");
@@ -69,6 +80,18 @@ export default function MapView() {
 
   const [center, setCenter] = useState(centroAyto ?? [40.4168, -3.7038]);
   const [mapZoom, setMapZoom] = useState(13);
+
+  useEffect(() => {
+  if (centroAyto) {
+    if (
+      center.lat !== centroAyto.lat ||
+      center.lng !== centroAyto.lng
+    ) {
+      setCenter(centroAyto);
+      setMapZoom(13);
+    }
+  }
+  }, [centroAyto]);
 
   useEffect(() => {
     if (!centroAyto && !posUsuario) {
@@ -154,8 +177,24 @@ export default function MapView() {
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <Recenter center={center} zoom={mapZoom} />
         <AddMarkerOnClick onAdd={handleAddIncidencia} />
+
+      {incidencias.map((incidencia) => (
+
+        <Marker icon={obtenerIconoPorEstado(incidencia.estado)}
+          key={incidencia._id}
+          position={[
+            incidencia.coordenadas.coordinates[1],
+            incidencia.coordenadas.coordinates[0],
+          ]}
+        >
+          <Popup>
+            <strong>{incidencia.titulo}</strong><br />
+            {incidencia.direccion}
+          </Popup>
+        </Marker>
+      ))}
+
 
         {posUsuario && (
           <Marker position={posUsuario} icon={userLocationIcon} />

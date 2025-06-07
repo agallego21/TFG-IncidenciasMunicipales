@@ -22,13 +22,16 @@ const incidenciaSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
-	puntoLongitud: {
-		type: String,
-		default: null
-	},
-	puntoLatitud: {
-		type: String,
-		default: null
+	coordenadas: {
+		type: {
+			type: String,
+			enum: ['Point'],
+			required: true
+		},
+		coordinates: {
+			type: [Number], // [longitud, latitud]
+			required: true
+		}
 	},
 	direccion: {
 		type: String,

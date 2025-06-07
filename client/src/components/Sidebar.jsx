@@ -5,8 +5,8 @@ import { FaTimes } from "react-icons/fa";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
 import IncidenciaCard from "./IncidenciaCard";
 
-export default function Sidebar({ visible, onClose }) {
-  const [incidencias, setIncidencias] = useState([]);
+export default function Sidebar({ visible, onClose, incidencias }) {
+  //const [incidencias, setIncidencias] = useState([]);
   const [tiposIncidencia, setTiposIncidencia] = useState([]);
   const [estadosIncidencia, setEstadosIncidencia] = useState([]);
   const [filtroMisIncidencias, setFiltroMisIncidencias] = useState(false);
@@ -17,7 +17,7 @@ export default function Sidebar({ visible, onClose }) {
   const { ayuntamiento } = useAyuntamiento();
 
   useEffect(() => {
-    const obtenerIncidencias = async () => {
+ /**    const obtenerIncidencias = async () => {
       try {
         if (!ayuntamiento) return;
         const respuesta = await axios.get(`http://localhost:5005/incidencias/ayuntamiento/${ayuntamiento.idAyuntamiento}`);
@@ -25,7 +25,7 @@ export default function Sidebar({ visible, onClose }) {
       } catch (error) {
         console.error("Error al obtener incidencias:", error);
       }
-    };
+    };**/
 
     const obtenerTipos = async () => {
       try {
@@ -46,7 +46,7 @@ export default function Sidebar({ visible, onClose }) {
     };
 
     if (ayuntamiento) {
-      obtenerIncidencias();
+      //obtenerIncidencias();
       obtenerTipos();
       obtenerEstados();
     }
@@ -76,13 +76,11 @@ export default function Sidebar({ visible, onClose }) {
 
   return (
     <aside
-      className={`sidebar p-3 position-fixed start-0 shadow ${
-        visible ? "d-block" : "d-none"
-      } d-md-block`}
+      className={`sidebar p-3 position-fixed start-0 shadow ${visible ? "d-block" : "d-none"} d-md-block`}
       style={{
         height: "calc(100vh - 60px)",
         zIndex: 1050,
-        overflowY: "auto"
+        overflowY: "auto",
       }}
     >
       <div className="d-flex justify-content-between align-items-center d-md-none mb-3">
@@ -141,15 +139,19 @@ export default function Sidebar({ visible, onClose }) {
         </Collapse>
       </div>
 
-      {incidencias.map((incidencia) => (
-        <IncidenciaCard
-          key={incidencia._id}
-          incidencia={incidencia}
-          getNombreEstado={getNombreEstado}
-          getNombreTipo={getNombreTipo}
-          onVerImagenes={abrirModalImagenes}
-        />
-      ))}
+      {incidencias && incidencias.length > 0 ? (
+        incidencias.map((incidencia) => (
+          <IncidenciaCard
+            key={incidencia._id}
+            incidencia={incidencia}
+            getNombreEstado={getNombreEstado}
+            getNombreTipo={getNombreTipo}
+            onVerImagenes={abrirModalImagenes}
+          />
+        ))
+      ) : (
+        <p>No hay incidencias que mostrar</p>
+      )}
 
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
