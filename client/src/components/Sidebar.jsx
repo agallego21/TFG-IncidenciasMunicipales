@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Modal, Card, Button, Carousel, Form, Collapse } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
+import { UserContext } from "../context/UserContext";
 import IncidenciaCard from "./IncidenciaCard";
 
 export default function Sidebar({ visible, onClose, incidencias }) {
-  //const [incidencias, setIncidencias] = useState([]);
+  const { usuario } = useContext(UserContext);
   const [tiposIncidencia, setTiposIncidencia] = useState([]);
   const [estadosIncidencia, setEstadosIncidencia] = useState([]);
   const [filtroMisIncidencias, setFiltroMisIncidencias] = useState(false);
@@ -17,16 +18,6 @@ export default function Sidebar({ visible, onClose, incidencias }) {
   const { ayuntamiento } = useAyuntamiento();
 
   useEffect(() => {
- /**    const obtenerIncidencias = async () => {
-      try {
-        if (!ayuntamiento) return;
-        const respuesta = await axios.get(`http://localhost:5005/incidencias/ayuntamiento/${ayuntamiento.idAyuntamiento}`);
-        setIncidencias(respuesta.data);
-      } catch (error) {
-        console.error("Error al obtener incidencias:", error);
-      }
-    };**/
-
     const obtenerTipos = async () => {
       try {
         const res = await axios.get("http://localhost:5005/tiposIncidencia");
@@ -46,7 +37,6 @@ export default function Sidebar({ visible, onClose, incidencias }) {
     };
 
     if (ayuntamiento) {
-      //obtenerIncidencias();
       obtenerTipos();
       obtenerEstados();
     }
@@ -99,16 +89,19 @@ export default function Sidebar({ visible, onClose, incidencias }) {
         <Collapse in={mostrarFiltros}>
           <div>
           <div className="filtros-container">
-          <Form.Group className="mb-3">
-            <Form.Label className="text-white">Filtrar por</Form.Label>
-            <Form.Select
-              value={filtroMisIncidencias ? "mis" : "todas"}
-              onChange={(e) => setFiltroMisIncidencias(e.target.value === "mis")}
-            >
-              <option value="todas">Todas</option>
-              <option value="mis">Mis incidencias</option>
-            </Form.Select>
-          </Form.Group>
+            { usuario ? (
+            <Form.Group className="mb-3">
+              <Form.Label className="text-white">Filtrar por</Form.Label>
+              <Form.Select
+                value={filtroMisIncidencias ? "mis" : "todas"}
+                onChange={(e) => setFiltroMisIncidencias(e.target.value === "mis")}
+              >
+                <option value="todas">Todas</option>
+                <option value="mis">Mis incidencias</option>
+              </Form.Select>
+            </Form.Group>
+            ) : null
+            }
             <Form.Group className="mt-2">
               <Form.Label>Estado</Form.Label>
               <Form.Select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>

@@ -5,7 +5,7 @@ import { UserContext } from "../context/UserContext";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
 
 export default function Header({ onLoginClick, onToggleSidebar }) {
-  const { usuario } = useContext(UserContext);
+  const { usuario, logout } = useContext(UserContext);
   const { ayuntamiento } = useAyuntamiento();
 
   const logoURL = ayuntamiento
@@ -23,27 +23,33 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
       </button>
 
       {usuario ? (
-        <p><button className="btn-filtrar">
-          Desconectarse
-        </button>
-        &nbsp;<b>Hola, {usuario.nombre} {usuario.apellidos}!</b>
+        <p>
+          <button className="btn-filtrar" onClick={logout}>
+            Desconectarse
+          </button>
+          &nbsp;<b>Hola, {usuario.nombre} {usuario.apellidos}!</b>
         </p>
       ) : (
-        <p><button className="btn-filtrar" onClick={onLoginClick}>
-          Identificarse
-        </button></p>
+        <p>
+          <button className="btn-filtrar" onClick={onLoginClick}>
+            Identificarse
+          </button>
+        </p>
       )}
 
       {ayuntamiento ? (
-      <div className="header-info">
-        <img src={logoURL} alt={`Logo Ayuntamiento de ${ayuntamiento.municipio}`} className="logo" />
-        <span className="title">Ayuntamiento de {ayuntamiento ? ayuntamiento.municipio : "..."}</span>
-      </div>
+        <div className="header-info">
+          <img
+            src={logoURL}
+            alt={`Logo Ayuntamiento de ${ayuntamiento.municipio}`}
+            className="logo"
+          />
+          <span className="title">Ayuntamiento de {ayuntamiento.municipio}</span>
+        </div>
       ) : (
-      <div className="header-info">
-        <span className="title">&nbsp;</span>
-      </div>
-
+        <div className="header-info">
+          <span className="title">&nbsp;</span>
+        </div>
       )}
     </header>
   );

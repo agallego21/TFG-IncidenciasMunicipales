@@ -48,6 +48,12 @@ export default function App() {
     setShowLoginOnStart(false);
   };
 
+  const handleLogout = () => {
+    setUsuario(null);
+    setShowLogin(false);
+    setShowLoginOnStart(false);
+  };
+
   if (!ayuntamiento && !showLoginOnStart) {
     return <div className="loading">Cargando configuración del ayuntamiento...</div>;
   }
@@ -63,6 +69,7 @@ export default function App() {
         show={showLogin}
         handleClose={() => setShowLogin(false)}
         handleLogin={handleLogin}
+        ayuntamiento={ayuntamiento}
       />
     </div>
   );

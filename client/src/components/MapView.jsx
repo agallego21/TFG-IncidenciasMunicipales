@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from "react";
+import { MdMyLocation, MdLocationCity } from "react-icons/md";
+
 import {MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents} from "react-leaflet";
 import L from "leaflet";
 import {useAyuntamiento} from "../context/AyuntamientoContext";
@@ -126,6 +128,10 @@ export default function MapView({incidencias}) {
     }
   };
 
+  const centrarMapa = () => {
+    setCenter(centroAyto);
+  };
+
   const handleAddIncidencia = (latlng) => {
     setNewIncidencia(latlng);
     setShowModal(true);
@@ -153,7 +159,7 @@ export default function MapView({incidencias}) {
   return (
     <div className="map-view" style={{ position: "relative" }}>
       {centroAyto && (
-        <button
+        <button className="btn-filtrar"
           onClick={handleMiUbicacion}
           style={{
             position: "absolute",
@@ -161,18 +167,36 @@ export default function MapView({incidencias}) {
             top: 10,
             right: 10,
             padding: "8px 12px",
-            backgroundColor: "#007bff",
-            color: "white",
             border: "none",
             borderRadius: "4px",
             cursor: "pointer",
           }}
+          title="Mi ubicación"
         >
-          Mi ubicación
+          <MdMyLocation size={20} color="white" />
         </button>
       )}
 
-      <MapContainer center={center} zoom={13} className="map-container" style={{ height: "98%" }}>
+      {centroAyto && (
+        <button className="btn-filtrar"
+          onClick={centrarMapa}
+          style={{
+            position: "absolute",
+            zIndex: 1000,
+            top: 10,
+            right: 60,
+            padding: "8px 12px",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+          title="Centrar en Ayuntamiento"
+        >
+          <MdLocationCity size={20} color="white" />
+        </button>
+      )}
+
+      <MapContainer center={center} zoom={mapZoom} className="map-container" style={{ height: "98%" }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -190,7 +214,8 @@ export default function MapView({incidencias}) {
         >
           <Popup>
             <strong>{incidencia.titulo}</strong><br />
-            {incidencia.direccion}
+            {incidencia.direccion}<br />
+            {incidencia.estado}
           </Popup>
         </Marker>
       ))}
@@ -204,6 +229,8 @@ export default function MapView({incidencias}) {
             <Popup>Nueva incidencia</Popup>
           </Marker>
         )}
+
+        <Recenter center={center} zoom={mapZoom} />
       </MapContainer>
 
       <IncidenciaModal

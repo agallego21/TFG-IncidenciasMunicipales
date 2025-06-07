@@ -3,7 +3,7 @@ import { UserContext } from "../context/UserContext";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 
-export default function LoginModal({ show, handleClose }) {
+export default function LoginModal({ show, handleClose, ayuntamiento }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const { login } = useContext(UserContext);
@@ -23,7 +23,22 @@ export default function LoginModal({ show, handleClose }) {
       if (response.data.length === 0) {
         setError("Usuario no encontrado");
       } else {
-        login(response.data[0]);
+        const usuario = response.data[0];
+
+        // Validación del ayuntamiento
+        if (!ayuntamiento || usuario.idAyuntamiento !== ayuntamiento.idAyuntamiento) {
+          setError("El usuario no pertenece a este Ayuntamiento");
+          return;
+        }
+
+        // Aquí puedes también validar la contraseña si la tienes en tu backend, porque ahora no se valida
+        // Ejemplo rápido (no seguro para producción):
+        if (usuario.password !== formData.password) {
+          setError("Contraseña incorrecta");
+          return;
+        }
+
+        login(usuario);
         handleClose();
       }
     } catch (err) {
@@ -37,6 +52,7 @@ export default function LoginModal({ show, handleClose }) {
         <Modal.Title>Identificación</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={onSubmit}>
           <Form.Group controlId="formEmail">
             <Form.Label>Correo electrónico</Form.Label>
