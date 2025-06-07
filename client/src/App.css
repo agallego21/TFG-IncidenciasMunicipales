@@ -80,6 +80,12 @@ html, body, #root {
   color: #333;
 }
 
+.dropdown-admin {
+  background-color: #3b6a3f !important;
+  color: var(--color-white) !important;
+  border-color: #3b6a3f !important;
+}
+
 /** MapView**/
 .map-view {
   flex: 1;

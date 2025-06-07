@@ -41,6 +41,10 @@ app.use('/incidencias', rutasIncidencias);
 const rutasImagenes = require('./routes/imagenes.routes');
 app.use('/imagenes', rutasImagenes);
 
+//Rutas tiposUsuarios
+const tiposUsuarioRoutes = require('./routes/tiposUsuario.routes');
+app.use('/tiposUsuario', tiposUsuarioRoutes);
+
 //Rutas tiposIncidencia
 const tiposIncidenciaRoutes = require('./routes/tiposIncidencia.routes');
 app.use('/tiposIncidencia', tiposIncidenciaRoutes);

@@ -25,8 +25,9 @@ export default function LoginModal({ show, handleClose, ayuntamiento }) {
       } else {
         const usuario = response.data[0];
 
-        // Validación del ayuntamiento
-        if (!ayuntamiento || usuario.idAyuntamiento !== ayuntamiento.idAyuntamiento) {
+        // Validación del ayuntamiento, solo si hay un ayuntamiento seleccionado y el usuario no es admin=0
+        if(ayuntamiento && usuario.tipoUsuario !==0 && usuario.idAyuntamiento !== ayuntamiento.idAyuntamiento) {
+//if (!ayuntamiento || (usuario.tipoUsuario!==0 && usuario.idAyuntamiento !== ayuntamiento.idAyuntamiento)) {
           setError("El usuario no pertenece a este Ayuntamiento");
           return;
         }

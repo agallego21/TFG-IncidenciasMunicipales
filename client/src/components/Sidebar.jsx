@@ -74,8 +74,7 @@ export default function Sidebar({ visible, onClose, incidencias }) {
       }}
     >
       <div className="d-flex justify-content-between align-items-center d-md-none mb-3">
-        <h4 className="m-0">Incidencias</h4>
-        <Button variant="light" onClick={onClose}>
+        <Button className="btn-filtrar" onClick={onClose}>
           <FaTimes />
         </Button>
       </div>

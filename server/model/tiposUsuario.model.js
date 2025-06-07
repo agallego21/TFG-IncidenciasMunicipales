@@ -12,6 +12,6 @@ const tiposUsuarioSchema = mongoose.Schema({
     trim: true
   }
 });
-const TipoUsuario = mongoose.model('tipoUsuario', tiposUsuarioSchema)
+const TipoUsuario = mongoose.model('tipoUsuario', tiposUsuarioSchema, "tiposUsuario")
 
 module.exports = TipoUsuario
