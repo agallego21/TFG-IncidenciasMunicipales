@@ -12,10 +12,12 @@ const incidenciaSchema = mongoose.Schema({
 	titulo: {
 		type: String,
 		required: true,
+		maxlength: 50,
 		trim: true
 	},
 	descripcion: {
 		type: String,
+		maxlength: 250,
 		trim: true
 	},
 	fechaRegistro: {

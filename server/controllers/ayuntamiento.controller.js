@@ -6,14 +6,21 @@ exports.crearAyuntamiento = async (req, res) => {
   try {
     const nuevoId = await getSiguienteValorSecuencia('ayuntamientos');
 
-    const nuevoAyuntamiento = new Ayuntamiento({
+    const ayuntamientoData = {
       idAyuntamiento: nuevoId,
-      ...req.body,
+      municipio: req.body.municipio,
+      coordenadasCentro: JSON.parse(req.body.coordenadasCentro),
       fechaAlta: new Date(),
       fechaModif: new Date()
-    });
+    };
 
+    if (req.file && req.file.id) {
+      ayuntamientoData.idImagen = req.file.id;
+    }
+
+    const nuevoAyuntamiento = new Ayuntamiento(ayuntamientoData);
     await nuevoAyuntamiento.save();
+
     res.status(201).json(nuevoAyuntamiento);
   } catch (error) {
     console.error('Error al crear ayuntamiento:', error);

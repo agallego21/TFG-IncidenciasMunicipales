@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const upload = require("../config/multer");
+
 //Controlador de Ayuntamiento
 const controlador = require('../controllers/ayuntamiento.controller');
 

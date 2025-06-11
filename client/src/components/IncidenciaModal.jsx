@@ -129,10 +129,11 @@ const obtenerDireccion = async (lat, lng) => {
       <Modal.Body>
         <Form>
           <Form.Group controlId="formTitulo">
-            <Form.Label>Título</Form.Label>
+            <Form.Label>Título*</Form.Label>
             <Form.Control
               type="text"
               name="titulo"
+              maxLength={50}
               value={formData.titulo}
               onChange={handleChange}
               required
@@ -141,11 +142,12 @@ const obtenerDireccion = async (lat, lng) => {
           </Form.Group>
 
           <Form.Group controlId="formDescripcion" className="mt-3">
-            <Form.Label>Descripción</Form.Label>
+            <Form.Label>Descripción*</Form.Label>
             <Form.Control
               as="textarea"
               name="descripcion"
               rows={3}
+              maxLength={250}
               value={formData.descripcion}
               onChange={handleChange}
               disabled={loading}
@@ -153,7 +155,7 @@ const obtenerDireccion = async (lat, lng) => {
           </Form.Group>
 
           <Form.Group controlId="formTipo" className="mt-3">
-            <Form.Label>Tipo de incidencia</Form.Label>
+            <Form.Label>Tipo de incidencia*</Form.Label>
               <Form.Select
                 name="tipoIncidencia"
                 value={formData.tipoIncidencia}
