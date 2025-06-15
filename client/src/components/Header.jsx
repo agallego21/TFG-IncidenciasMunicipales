@@ -7,11 +7,14 @@ import { FaBars } from "react-icons/fa";
 import { UserContext } from "../context/UserContext";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
 import AyuntamientoModal from "./AyuntamientoModal";
+import UsuarioModal from "./UsuarioModal";
+
 
 export default function Header({ onLoginClick, onToggleSidebar }) {
   const { usuario, logout } = useContext(UserContext);
   const { ayuntamiento } = useAyuntamiento();
   const [showAltaModal, setShowAltaModal] = useState(false);
+  const [showUsuarioModal, setShowUsuarioModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -78,7 +81,7 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
                   <Dropdown.Item onClick={() => navigate("/admin/ayuntamientos/modificar")}>
                     Modificar ayuntamiento
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => navigate("/admin/usuarios/nuevo")}>
+                  <Dropdown.Item onClick={() => setShowUsuarioModal(true)}>
                     Alta nuevo usuario
                   </Dropdown.Item>
                   <Dropdown.Item onClick={() => navigate("/admin/usuarios/modificar")}>
@@ -116,6 +119,15 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
         show={showAltaModal}
         handleClose={() => setShowAltaModal(false)}
         onSubmit={handleAltaAyuntamiento}
+      />
+
+      <UsuarioModal
+        show={showUsuarioModal}
+        onHide={() => setShowUsuarioModal(false)}
+        onUsuarioCreado={(nuevoUsuario) => {
+          console.log("Usuario creado:", nuevoUsuario);
+          setShowUsuarioModal(false);
+        }}
       />
     </>
 

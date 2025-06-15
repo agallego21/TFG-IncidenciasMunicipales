@@ -2,24 +2,15 @@ const express = require("express");
 const router = express.Router();
 const upload = require("../config/multer");
 const path = require("path");
+const incidenciasController = require('../controllers/incidencia.controller');
 
-const {
-  crearIncidencia,
-  obtenerIncidencias,
-  obtenerIncidenciaPorId,
-  obtenerIncidenciasPorAyuntamiento,
-  obtenerIncidenciasPorUsuario,
-  actualizarIncidencia,
-  eliminarIncidencia
-} = require("../controllers/incidencia.controller");
-
-// Rutas (orden importa)
-router.get("/ayuntamiento/:idAyuntamiento", obtenerIncidenciasPorAyuntamiento);
-router.get("/usuario/:idUsuario", obtenerIncidenciasPorUsuario);
-router.get("/", obtenerIncidencias);
-router.get("/:id", obtenerIncidenciaPorId);
-router.post("/", upload.single("imagen"), crearIncidencia);
-router.put("/:id", actualizarIncidencia);
-router.delete("/:id", eliminarIncidencia);
+// Rutas (el orden importa)
+router.get("/ayuntamiento/:idAyuntamiento", incidenciasController.obtenerIncidenciasPorAyuntamiento);
+router.get("/usuario/:idUsuario", incidenciasController.obtenerIncidenciasPorUsuario);
+router.get("/", incidenciasController.obtenerIncidencias);
+router.get("/:id", incidenciasController.obtenerIncidenciaPorId);
+router.post("/", upload.single("imagen"), incidenciasController.crearIncidencia);
+router.put("/:id", incidenciasController.actualizarIncidencia);
+router.delete("/:id", incidenciasController.eliminarIncidencia);
 
 module.exports = router;

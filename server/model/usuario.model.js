@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt');
 
 const usuarioSchema = mongoose.Schema({
   idUsuario: {
@@ -38,7 +39,7 @@ const usuarioSchema = mongoose.Schema({
   idImagen: {
 	type: mongoose.Schema.Types.ObjectId, // Referencia al _id de la imagen
 	ref: 'Imagen',
-	required: true
+	required: false
   },
   fechaAlta: {
     type: Date,
@@ -54,9 +55,20 @@ const usuarioSchema = mongoose.Schema({
   }
 });
 
-// Middleware: actualiza fechaModif automáticamente
-usuarioSchema.pre('save', function (next) {
+// Middleware: actualiza fechaModif automáticamente y encripta la contraseña
+usuarioSchema.pre('save', async function (next) {
   this.fechaModif = new Date();
+
+  // Solo si la contraseña fue modificada o es nueva
+  if (this.isModified('password')) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    } catch (err) {
+      return next(err);
+    }
+  }
+
   next();
 });
 

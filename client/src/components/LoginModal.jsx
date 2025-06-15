@@ -1,12 +1,17 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../context/UserContext";
 import { Modal, Button, Form, Alert } from "react-bootstrap";
+import { API_REST_CONSTANTS } from "../config/api";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 export default function LoginModal({ show, handleClose, ayuntamiento }) {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const { login } = useContext(UserContext);
+
+  const navigate = useNavigate();
+  const { idAyuntamiento } = useParams();
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -15,35 +20,48 @@ export default function LoginModal({ show, handleClose, ayuntamiento }) {
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
-      const response = await axios.get(
-        `http://localhost:5005/usuarios?email=${encodeURIComponent(formData.email)}`
+      const response = await axios.post(
+        API_REST_CONSTANTS.ENDPOINTS.USUARIO_LOGIN,
+        {
+          email: formData.email,
+          password: formData.password,
+        }
       );
 
-      if (response.data.length === 0) {
+      const usuario = response.data.usuario;
+
+      // Validación del ayuntamiento si aplica (excepto para admins)
+      if (
+        ayuntamiento &&
+        usuario.tipoUsuario !== 0 &&
+        usuario.idAyuntamiento !== ayuntamiento.idAyuntamiento
+      ) {
+        setError("El usuario no pertenece a este Ayuntamiento");
+        return;
+      }
+
+      login(usuario);
+
+      //Redirigimos a su ayuntamiento
+      /*if (
+        ayuntamiento &&
+        usuario.tipoUsuario !== 0 &&
+        ayuntamiento.idAyuntamiento !== usuario.idAyuntamiento
+      ) {
+        navigate(`/ayuntamiento/${usuario.idAyuntamiento}`);
+      }*/
+      handleClose();
+
+    } catch (err) {
+      if (err.response?.status === 401) {
+        setError("Contraseña incorrecta");
+      } else if (err.response?.status === 404) {
         setError("Usuario no encontrado");
       } else {
-        const usuario = response.data[0];
-
-        // Validación del ayuntamiento, solo si hay un ayuntamiento seleccionado y el usuario no es admin=0
-        if(ayuntamiento && usuario.tipoUsuario !==0 && usuario.idAyuntamiento !== ayuntamiento.idAyuntamiento) {
-//if (!ayuntamiento || (usuario.tipoUsuario!==0 && usuario.idAyuntamiento !== ayuntamiento.idAyuntamiento)) {
-          setError("El usuario no pertenece a este Ayuntamiento");
-          return;
-        }
-
-        // Aquí puedes también validar la contraseña si la tienes en tu backend, porque ahora no se valida
-        // Ejemplo rápido (no seguro para producción):
-        if (usuario.password !== formData.password) {
-          setError("Contraseña incorrecta");
-          return;
-        }
-
-        login(usuario);
-        handleClose();
+        setError("Error al conectar con el servidor");
       }
-    } catch (err) {
-      setError("Error al conectar con el servidor");
     }
   };
 

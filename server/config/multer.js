@@ -5,7 +5,7 @@ const fs = require('fs');
 // Configuración del almacenamiento
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const tipo = req.body.tipo || 'otros'; // 'usuarios', 'ayuntamientos', 'incidencias', etc.
+    const tipo = req.body.tipo || 'otros'; // 'usuarios', 'ayuntamientos', 'incidencias'
     const carpetaDestino = path.join(__dirname, `../public/images/${tipo}`);
 
     // Crear carpeta si no existe
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    const nombreArchivo = file.fieldname + '-' + Date.now() + ext;
+    const nombreArchivo = 'imagen-' + Date.now() + ext;
     cb(null, nombreArchivo);
   }
 });

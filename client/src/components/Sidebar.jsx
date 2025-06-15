@@ -5,6 +5,7 @@ import { FaTimes } from "react-icons/fa";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
 import { UserContext } from "../context/UserContext";
 import IncidenciaCard from "./IncidenciaCard";
+import { API_REST_CONSTANTS } from "../config/api";
 
 export default function Sidebar({ visible, onClose, incidencias }) {
   const { usuario } = useContext(UserContext);
@@ -14,13 +15,14 @@ export default function Sidebar({ visible, onClose, incidencias }) {
   const [filtroTipo, setFiltroTipo] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const [incidenciasFiltradas, setIncidenciasFiltradas] = useState([]);
 
   const { ayuntamiento } = useAyuntamiento();
 
   useEffect(() => {
     const obtenerTipos = async () => {
       try {
-        const res = await axios.get("http://localhost:5005/tiposIncidencia");
+        const res = await axios.get(API_REST_CONSTANTS.ENDPOINTS.TIPOS_INCIDENCIA);
         setTiposIncidencia(res.data);
       } catch (error) {
         console.error("Error al obtener tipos de incidencia:", error);
@@ -29,7 +31,7 @@ export default function Sidebar({ visible, onClose, incidencias }) {
 
     const obtenerEstados = async () => {
       try {
-        const res = await axios.get("http://localhost:5005/estadosIncidencia");
+        const res = await axios.get(API_REST_CONSTANTS.ENDPOINTS.ESTADOS_INCIDENCIA);
         setEstadosIncidencia(res.data);
       } catch (error) {
         console.error("Error al obtener estados de incidencia:", error);
@@ -41,6 +43,10 @@ export default function Sidebar({ visible, onClose, incidencias }) {
       obtenerEstados();
     }
   }, [ayuntamiento]);
+
+  useEffect(() => {
+    setIncidenciasFiltradas(incidencias || []);
+  }, [incidencias]);
 
   const getNombreTipo = (idTipo) => {
     const tipo = tiposIncidencia.find((t) => t.idTipo === idTipo);
@@ -61,7 +67,24 @@ export default function Sidebar({ visible, onClose, incidencias }) {
   };
 
   const aplicarFiltros = () => {
-    // Aquí puedes aplicar filtros con llamadas al backend o localmente si ya tienes todas las incidencias
+    let resultado = incidencias;
+
+console.log(usuario)
+console.log(filtroMisIncidencias)
+
+    if (filtroMisIncidencias && usuario) {
+      resultado = resultado.filter((inci) => parseInt(inci.idUsuario) === usuario.idUsuario);
+    }
+
+    if (filtroTipo) {
+      resultado = resultado.filter((inci) => inci.tipoIncidencia === parseInt(filtroTipo));
+    }
+
+    if (filtroEstado) {
+      resultado = resultado.filter((inci) => inci.estado === parseInt(filtroEstado));
+    }
+
+    setIncidenciasFiltradas(resultado);
   };
 
   return (
@@ -131,8 +154,8 @@ export default function Sidebar({ visible, onClose, incidencias }) {
         </Collapse>
       </div>
 
-      {incidencias && incidencias.length > 0 ? (
-        incidencias.map((incidencia) => (
+      {incidenciasFiltradas && incidenciasFiltradas.length > 0 ? (
+        incidenciasFiltradas.map((incidencia) => (
           <IncidenciaCard
             key={incidencia._id}
             incidencia={incidencia}
@@ -152,7 +175,7 @@ export default function Sidebar({ visible, onClose, incidencias }) {
         <Modal.Body>
           {imagenesModal.length === 1 ? (
             <img
-              src={"http://localhost:5005/" + imagenesModal[0].url}
+              src={API_REST_CONSTANTS.ENDPOINTS.IMAGEN(imagenesModal[0].url)}
               alt="Imagen incidencia"
               className="img-fluid"
             />
@@ -162,7 +185,7 @@ export default function Sidebar({ visible, onClose, incidencias }) {
                 <Carousel.Item key={img.id}>
                   <img
                     className="d-block w-100"
-                    src={"http://localhost:5005/" + img.url}
+                    src={API_REST_CONSTANTS.ENDPOINTS.IMAGEN(img.url)}
                     alt={`Imagen incidencia ${img.id}`}
                   />
                 </Carousel.Item>

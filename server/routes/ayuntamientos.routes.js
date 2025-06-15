@@ -6,7 +6,7 @@ const upload = require("../config/multer");
 //Controlador de Ayuntamiento
 const controlador = require('../controllers/ayuntamiento.controller');
 
-router.post('/', controlador.crearAyuntamiento);
+router.post("/", upload.single("imagen"), controlador.crearAyuntamiento);
 router.get('/', controlador.obtenerAyuntamientos);
 router.get('/:idAyuntamiento', controlador.obtenerAyuntamientoPorId);
 router.put('/:idAyuntamiento', controlador.actualizarAyuntamiento);

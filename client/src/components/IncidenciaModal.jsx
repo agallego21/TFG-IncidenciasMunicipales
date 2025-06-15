@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useUser } from "../context/UserContext";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
+import { API_REST_CONSTANTS } from "../config/api";
 
 export default function IncidenciaModal({ show, onClose, latlng }) {
   const { usuario } = useUser();
@@ -30,7 +31,7 @@ export default function IncidenciaModal({ show, onClose, latlng }) {
     if (show && tiposIncidencia.length === 0) {
       const fetchTipos = async () => {
         try {
-          const res = await axios.get('http://localhost:5005/tiposIncidencia');
+          const res = await axios.get(API_REST_CONSTANTS.ENDPOINTS.TIPOS_INCIDENCIA);
           setTiposIncidencia(res.data);
         } catch (error) {
           console.error('Error cargando tipos de incidencia:', error);
@@ -100,7 +101,7 @@ const obtenerDireccion = async (lat, lng) => {
         data.append("imagen", formData.imagen);
       }
 
-      const res = await axios.post("http://localhost:5005/incidencias", data, {
+      const res = await axios.post(API_REST_CONSTANTS.ENDPOINTS.INCIDENCIAS, data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

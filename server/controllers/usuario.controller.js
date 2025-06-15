@@ -1,93 +1,116 @@
-const Usuario = require('../models/Usuario');
+const Usuario = require('../model/usuario.model');
+const { getSiguienteValorSecuencia } = require('../utils/secuencias');
+const bcrypt = require('bcrypt');
 
-exports.obtenerUsuarios = async (req, res) => {
-  const { email, departamento } = req.query;
-  const filtro = {};
-  if (email) filtro.email = email;
-  if (departamento) filtro.departamento = departamento;
-
+// Obtener todos los usuarios, con filtros opcionales
+const obtenerUsuarios = async (req, res) => {
   try {
+    const {
+      idAyuntamiento,
+      email } = req.query;
+    const filtro = {};
+    if (idAyuntamiento) filtro.idAyuntamiento = Number(idAyuntamiento);
+    if (email) filtro.email = email;
+
     const usuarios = await Usuario.find(filtro);
     res.json(usuarios);
   } catch (error) {
-    res.status(500).json({ error: 'Error al recuperar usuarios' });
+    console.error("Error al obtener usuarios:", error);
+    res.status(500).json({ error: "Error al obtener usuarios" });
   }
 };
 
-exports.obtenerUsuarioPorId = async (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario, 10);
-
+// Obtener un usuario por idUsuario
+const obtenerUsuarioPorId = async (req, res) => {
   try {
-    const usuario = await Usuario.findOne({ idUsuario });
-    if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
+    const { idUsuario } = req.params;
+    const usuario = await Usuario.findOne({ idUsuario: Number(idUsuario) });
+    if (!usuario) return res.status(404).json({ error: "Usuario no encontrado" });
     res.json(usuario);
   } catch (error) {
-    res.status(500).json({ error: 'Error al recuperar el usuario' });
+    console.error("Error al obtener el usuario:", error);
+    res.status(500).json({ error: "Error al obtener el usuario" });
   }
 };
 
-exports.crearUsuario = async (req, res) => {
-  const {
-    nombre,
-    apellidos,
-    email,
-    password,
-    tipoUsuario,
-    idAyuntamiento,
-    imagen,
-    estado
-  } = req.body;
+// Crear nuevo usuario
+const crearUsuario = async (req, res) => {
+  try {
+    const datos = req.body;
 
-  try { //Validación de que no exista previamente
-    const existe = await Usuario.findOne({ email });
-    if (existe) {
-      return res.status(400).json({ error: 'Ya existe el usuario dado de alta con esa dirección de email' });
-    }
+    const nuevoId = await getSiguienteValorSecuencia('usuarios');
 
-    //REcuperamos el valor del idUsuario
-    const idUsuarioNuevo = await getSiguienteValorSecuencia('usuarios', db);
-
-    // Creamos el nuevo usuario con todos los campos
     const nuevoUsuario = new Usuario({
-      idUsuario: idUsuarioNuevo,
-      nombre,
-      apellidos,
-      email,
-      password,
-      tipoUsuario,
-      idAyuntamiento,
-      imagen: imagen || null,
-      estado: estado ?? 1 //ACtivo si no se especifica otro valor
+      ...datos,
+      idUsuario: nuevoId
     });
 
-    await nuevoUsuario.save();
-    res.status(201).json(nuevoUsuario);
+    const guardado = await nuevoUsuario.save();
+    res.status(201).json(guardado);
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el usuario' });
+    console.error("Error al crear el usuario:", error);
+    res.status(400).json({ error: "Error al crear el usuario" });
   }
 };
 
-exports.actualizarUsuario = async (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario, 10);
-  const cambios = req.body;
-
+// Actualizar usuario
+const actualizarUsuario = async (req, res) => {
   try {
-    const actualizado = await Usuario.findOneAndUpdate({ idUsuario }, cambios, { new: true });
-    if (!actualizado) return res.status(404).json({ error: 'Usuario no encontrado' });
+    const { idUsuario } = req.params;
+    const actualizado = await Usuario.findOneAndUpdate(
+      { idUsuario: Number(idUsuario) },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!actualizado) return res.status(404).json({ error: "Usuario no encontrado" });
     res.json(actualizado);
   } catch (error) {
-    res.status(500).json({ error: 'Error al actualizar el usuario' });
+    console.error("Error al actualizar el usuario:", error);
+    res.status(400).json({ error: "Error al actualizar el usuario" });
   }
 };
 
-exports.eliminarUsuario = async (req, res) => {
-  const idUsuario = parseInt(req.params.idUsuario, 10);
+// Eliminar usuario
+const eliminarUsuario = async (req, res) => {
+  try {
+    const { idUsuario } = req.params;
+    const eliminado = await Usuario.findOneAndDelete({ idUsuario: Number(idUsuario) });
+    if (!eliminado) return res.status(404).json({ error: "Usuario no encontrado" });
+    res.json({ mensaje: "Usuario eliminado correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar el usuario:", error);
+    res.status(500).json({ error: "Error al eliminar el usuario" });
+  }
+};
+
+
+ const loginUsuario = async (req, res) => {
+  const { email, password } = req.body;
 
   try {
-    const eliminado = await Usuario.findOneAndDelete({ idUsuario });
-    if (!eliminado) return res.status(404).json({ error: 'Usuario no encontrado' });
-    res.json({ mensaje: 'Usuario eliminado correctamente' });
-  } catch (error) {
-    res.status(500).json({ error: 'Error al eliminar el usuario' });
+    const usuario = await Usuario.findOne({ email });
+    if (!usuario) return res.status(404).json({ mensaje: "Usuario no encontrado" });
+
+    const match = await bcrypt.compare(password, usuario.password);
+    if (!match) return res.status(401).json({ mensaje: "Contraseña incorrecta" });
+
+    // Comprobar si el usuario está activo o pertenece al ayuntamiento
+
+    // Devuelve los datos necesarios (sin la contraseña)
+    const { password: _, ...usuarioSinPassword } = usuario.toObject();
+    res.json({ usuario: usuarioSinPassword });
+
+  } catch (err) {
+    console.error("Error en login:", err);
+    res.status(500).json({ mensaje: "Error en el servidor" });
   }
+};
+
+module.exports = {
+  obtenerUsuarios,
+  obtenerUsuarioPorId,
+  crearUsuario,
+  actualizarUsuario,
+  eliminarUsuario,
+  loginUsuario
 };
