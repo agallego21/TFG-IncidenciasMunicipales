@@ -7,7 +7,7 @@ import { UserContext } from "../context/UserContext";
 import IncidenciaCard from "./IncidenciaCard";
 import { API_REST_CONSTANTS } from "../config/api";
 
-export default function Sidebar({ visible, onClose, incidencias }) {
+export default function Sidebar({ visible, onClose, incidencias, incidenciasFiltradas, setIncidenciasFiltradas }) {
   const { usuario } = useContext(UserContext);
   const [tiposIncidencia, setTiposIncidencia] = useState([]);
   const [estadosIncidencia, setEstadosIncidencia] = useState([]);
@@ -15,7 +15,6 @@ export default function Sidebar({ visible, onClose, incidencias }) {
   const [filtroTipo, setFiltroTipo] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
-  const [incidenciasFiltradas, setIncidenciasFiltradas] = useState([]);
 
   const { ayuntamiento } = useAyuntamiento();
 
@@ -43,10 +42,6 @@ export default function Sidebar({ visible, onClose, incidencias }) {
       obtenerEstados();
     }
   }, [ayuntamiento]);
-
-  useEffect(() => {
-    setIncidenciasFiltradas(incidencias || []);
-  }, [incidencias]);
 
   const getNombreTipo = (idTipo) => {
     const tipo = tiposIncidencia.find((t) => t.idTipo === idTipo);

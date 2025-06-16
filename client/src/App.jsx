@@ -17,6 +17,11 @@ export default function App() {
   
   //estado para incidencias
   const [incidencias, setIncidencias] = useState([]);
+  const [incidenciasFiltradas, setIncidenciasFiltradas] = useState([]);
+
+  useEffect(() => {
+    setIncidenciasFiltradas(incidencias);
+  }, [incidencias]);
 
   useEffect(() => {
     if (showLoginOnStart) {
@@ -62,8 +67,13 @@ export default function App() {
     <div className="app-container">
       <Header onToggleSidebar={toggleSidebar} onLoginClick={() => setShowLogin(true)} />
       <div className="main-content">
-        <Sidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} incidencias={incidencias} />
-        <MapView incidencias={incidencias} />
+        <Sidebar visible={sidebarVisible} 
+          onClose={() => setSidebarVisible(false)} 
+          incidencias={incidencias}
+          incidenciasFiltradas={incidenciasFiltradas}
+          setIncidenciasFiltradas={setIncidenciasFiltradas}
+        />
+        <MapView incidencias={incidenciasFiltradas} />
       </div>
       <LoginModal
         show={showLogin}
