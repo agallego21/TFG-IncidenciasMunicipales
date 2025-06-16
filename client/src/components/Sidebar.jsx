@@ -64,9 +64,6 @@ export default function Sidebar({ visible, onClose, incidencias, incidenciasFilt
   const aplicarFiltros = () => {
     let resultado = incidencias;
 
-console.log(usuario)
-console.log(filtroMisIncidencias)
-
     if (filtroMisIncidencias && usuario) {
       resultado = resultado.filter((inci) => parseInt(inci.idUsuario) === usuario.idUsuario);
     }

@@ -18,7 +18,7 @@ const imagenesSchema = mongoose.Schema({
     default: Date.now
   }
 });
-const Imagen = mongoose.model('imagen', imagenesSchema, 'imagenes')
+const Imagen = mongoose.model('Imagen', imagenesSchema, 'imagenes')
 
 module.exports = Imagen
 

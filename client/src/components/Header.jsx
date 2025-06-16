@@ -8,18 +8,23 @@ import { UserContext } from "../context/UserContext";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
 import AyuntamientoModal from "./AyuntamientoModal";
 import UsuarioModal from "./UsuarioModal";
-
+import GestionAyuntamientosModal from "./GestionAyuntamientosModal";
+import GestionUsuariosModal from "./GestionUsuariosModal";
+import { API_REST_CONSTANTS } from "../config/api";
 
 export default function Header({ onLoginClick, onToggleSidebar }) {
   const { usuario, logout } = useContext(UserContext);
   const { ayuntamiento } = useAyuntamiento();
   const [showAltaModal, setShowAltaModal] = useState(false);
   const [showUsuarioModal, setShowUsuarioModal] = useState(false);
+  
+  const [showGestionAyuntamientos, setShowGestionAyuntamientos] = useState(false);
+  const [showGestionUsuarios, setShowGestionUsuarios] = useState(false);
 
   const navigate = useNavigate();
 
-  const logoURL = ayuntamiento
-    ? `/assets/logos/${ayuntamiento.idAyuntamiento}.jpg`
+  const logoURL = ayuntamiento?.idImagen?.path
+    ? `${API_REST_CONSTANTS.ENDPOINTS.IMAGEN(ayuntamiento.idImagen.path)}`
     : null;
 
   const handleAltaAyuntamiento = async (formData) => {
@@ -36,7 +41,7 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
         data.append("imagen", formData.imagen);
       }
 
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/ayuntamientos`, data, {
+      const res = await axios.post((API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS), data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -70,22 +75,15 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
 
             {usuario.tipoUsuario === 0 && (
               <Dropdown>
-                <Dropdown.Toggle className="dropdown-admin" size="sm" aria-label="Opciones de administrador">
+                <Dropdown.Toggle className="dropdown-admin" size="sm">
                   Opciones de administrador
                 </Dropdown.Toggle>
-
                 <Dropdown.Menu>
-                  <Dropdown.Item onClick={() => setShowAltaModal(true)}>
-                    Alta nuevo ayuntamiento
+                  <Dropdown.Item onClick={() => setShowGestionAyuntamientos(true)}>
+                    Gestión de ayuntamientos
                   </Dropdown.Item>
-                  <Dropdown.Item onClick={() => navigate("/admin/ayuntamientos/modificar")}>
-                    Modificar ayuntamiento
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={() => setShowUsuarioModal(true)}>
-                    Alta nuevo usuario
-                  </Dropdown.Item>
-                  <Dropdown.Item onClick={() => navigate("/admin/usuarios/modificar")}>
-                    Modificar datos usuario
+                  <Dropdown.Item onClick={() => setShowGestionUsuarios(true)}>
+                    Gestión de usuarios
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
@@ -101,11 +99,13 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
 
         {ayuntamiento ? (
           <div className="header-info">
-            <img
-              src={logoURL}
-              alt={`Logo Ayuntamiento de ${ayuntamiento.municipio}`}
-              className="logo"
-            />
+            {logoURL && (
+              <img
+                src={logoURL}
+                alt={`Logo Ayuntamiento de ${ayuntamiento.municipio}`}
+                className="logo"
+              />
+            )}
             <span className="title">Ayuntamiento de {ayuntamiento.municipio}</span>
           </div>
         ) : (
@@ -129,6 +129,17 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
           setShowUsuarioModal(false);
         }}
       />
+
+      <GestionAyuntamientosModal
+        show={showGestionAyuntamientos}
+        onHide={() => setShowGestionAyuntamientos(false)}
+      />
+
+      <GestionUsuariosModal
+        show={showGestionUsuarios}
+        onHide={() => setShowGestionUsuarios(false)}
+      />
+
     </>
 
   );

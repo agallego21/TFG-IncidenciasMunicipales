@@ -9,29 +9,8 @@ const controlador = require('../controllers/ayuntamiento.controller');
 router.post("/", upload.single("imagen"), controlador.crearAyuntamiento);
 router.get('/', controlador.obtenerAyuntamientos);
 router.get('/:idAyuntamiento', controlador.obtenerAyuntamientoPorId);
-router.put('/:idAyuntamiento', controlador.actualizarAyuntamiento);
+router.put("/:id", upload.single("imagen"), controlador.actualizarAyuntamiento);
 router.delete('/:idAyuntamiento', controlador.eliminarAyuntamiento);
 
+
 module.exports = router;
-
-
-/*const express = require('express');
-const router = express.Router();
-const Ayuntamiento = require('../model/ayuntamiento.model');
-
-//Obtener todos los ayuntamientos
-router.get('/', (req, res) => {
-	Ayuntamiento
-		.find()
-		.then(allAyuntamientos => res.json(allAyuntamientos))
-})
-
-//Obtener ayuntamiento por su idAyuntamiento
-router.get('/:idAyuntamiento', (req, res) => {
-	const {idAyuntamiento} = req.params
-	Ayuntamiento
-		.findOne({'idAyuntamiento': idAyuntamiento})
-		.then(ayuntamiento => res.json(ayuntamiento))
-})
-
-module.exports = router;*/

@@ -1,4 +1,5 @@
 const Ayuntamiento = require('../model/ayuntamiento.model');
+const Imagen = require('../model/imagenes.model');
 const { getSiguienteValorSecuencia } = require('../utils/secuencias');
 
 // Crear un nuevo ayuntamiento
@@ -6,19 +7,28 @@ exports.crearAyuntamiento = async (req, res) => {
   try {
     const nuevoId = await getSiguienteValorSecuencia('ayuntamientos');
 
+    let imagenGuardada = null;
+    if (req.file) {
+      const nuevaImagen = new Imagen({
+        nombreArchivo: req.file.filename,
+        path: `/images/ayuntamientos/${req.file.filename}`,
+        mimetype: req.file.mimetype,
+      });
+
+      imagenGuardada = await nuevaImagen.save();
+    }
+
     const ayuntamientoData = {
       idAyuntamiento: nuevoId,
       municipio: req.body.municipio,
       coordenadasCentro: JSON.parse(req.body.coordenadasCentro),
+      idImagen: imagenGuardada?._id || null,
       fechaAlta: new Date(),
       fechaModif: new Date()
     };
 
-    if (req.file && req.file.id) {
-      ayuntamientoData.idImagen = req.file.id;
-    }
-
     const nuevoAyuntamiento = new Ayuntamiento(ayuntamientoData);
+
     await nuevoAyuntamiento.save();
 
     res.status(201).json(nuevoAyuntamiento);
@@ -42,7 +52,9 @@ exports.obtenerAyuntamientos = async (req, res) => {
 // Obtener un ayuntamiento por su ID interno (idAyuntamiento)
 exports.obtenerAyuntamientoPorId = async (req, res) => {
   try {
-    const ayuntamiento = await Ayuntamiento.findOne({ idAyuntamiento: req.params.idAyuntamiento });
+    const ayuntamiento = await Ayuntamiento.findOne({ idAyuntamiento: req.params.idAyuntamiento })
+      .populate('idImagen') 
+      .exec();
 
     if (!ayuntamiento) {
       return res.status(404).json({ error: 'Ayuntamiento no encontrado' });

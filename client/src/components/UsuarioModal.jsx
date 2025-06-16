@@ -18,6 +18,21 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
   const [enviando, setEnviando] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
 
+    useEffect(() => {
+    if (show) {
+        setFormData({
+        idAyuntamiento: "",
+        tipoUsuario: "",
+        email: "",
+        password: "",
+        nombre: "",
+        apellidos: "",
+        });
+        setErrorEmail("");
+        setMostrarPassword(false);
+    }
+    }, [show]);
+
   // Obtener ayuntamientos y tipos de usuario
   useEffect(() => {
     const fetchData = async () => {
@@ -86,7 +101,7 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
           <Form.Group className="mb-3">
             <Form.Label>Ayuntamiento</Form.Label>
             <Form.Select name="idAyuntamiento"
-                value={formData.ayuntamiento}
+                value={formData.idAyuntamiento}
                 onChange={handleChange} required>
               <option value="">Selecciona un ayuntamiento</option>
               {ayuntamientos.map((ayuntamiento) => (
@@ -154,7 +169,7 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={onHide}>Cancelar</Button>
-          <Button variant="primary" type="submit" disabled={enviando || errorEmail}>
+          <Button variant="primary" className="btn-success" type="submit" disabled={enviando || errorEmail}>
             Crear usuario
           </Button>
         </Modal.Footer>

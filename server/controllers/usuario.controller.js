@@ -5,12 +5,12 @@ const bcrypt = require('bcrypt');
 // Obtener todos los usuarios, con filtros opcionales
 const obtenerUsuarios = async (req, res) => {
   try {
-    const {
-      idAyuntamiento,
-      email } = req.query;
+    const { idAyuntamiento, email, tipoUsuario } = req.query;
     const filtro = {};
+
     if (idAyuntamiento) filtro.idAyuntamiento = Number(idAyuntamiento);
     if (email) filtro.email = email;
+    if (tipoUsuario !== undefined) filtro.tipoUsuario = Number(tipoUsuario);
 
     const usuarios = await Usuario.find(filtro);
     res.json(usuarios);
