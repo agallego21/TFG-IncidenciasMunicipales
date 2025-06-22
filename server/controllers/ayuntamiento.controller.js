@@ -21,6 +21,10 @@ exports.crearAyuntamiento = async (req, res) => {
     const ayuntamientoData = {
       idAyuntamiento: nuevoId,
       municipio: req.body.municipio,
+      direccionPostal: req.body.direccionPostal,
+      correoElectronico:req.body.correoElectronico,
+      telefono:req.body.telefono,
+      fax:req.body.fax,
       coordenadasCentro: JSON.parse(req.body.coordenadasCentro),
       idImagen: imagenGuardada?._id || null,
       fechaAlta: new Date(),
@@ -41,7 +45,7 @@ exports.crearAyuntamiento = async (req, res) => {
 // Obtener todos los ayuntamientos
 exports.obtenerAyuntamientos = async (req, res) => {
   try {
-    const ayuntamientos = await Ayuntamiento.find();
+    const ayuntamientos = await Ayuntamiento.find().populate('idImagen') ;
     res.json(ayuntamientos);
   } catch (error) {
     console.error('Error al obtener ayuntamientos:', error);
@@ -70,20 +74,50 @@ exports.obtenerAyuntamientoPorId = async (req, res) => {
 // Actualizar un ayuntamiento por idAyuntamiento
 exports.actualizarAyuntamiento = async (req, res) => {
   try {
+    let imagenGuardada = null;
+
+    if (req.file) {
+      const nuevaImagen = new Imagen({
+        nombreArchivo: req.file.filename,
+        path: `/images/ayuntamientos/${req.file.filename}`,
+        mimetype: req.file.mimetype,
+      });
+
+      imagenGuardada = await nuevaImagen.save();
+    }
+
+console.log(req.body);
+
+    const ayuntamientoData = {
+      municipio: req.body.municipio,
+      direccionPostal: req.body.direccionPostal,
+      correoElectronico:req.body.correoElectronico,
+      telefono:req.body.telefono,
+      fax:req.body.fax,
+      coordenadasCentro: JSON.parse(req.body.coordenadasCentro),
+      fechaModif: new Date(),
+    };
+
+    // Asociar imagen si se ha subido
+    if (imagenGuardada) {
+      ayuntamientoData.idImagen = imagenGuardada._id;
+    }
+
     const ayuntamientoActualizado = await Ayuntamiento.findOneAndUpdate(
       { idAyuntamiento: req.params.id },
-      { ...req.body, fechaModif: new Date() },
+      ayuntamientoData,
       { new: true }
     );
 
+
     if (!ayuntamientoActualizado) {
-      return res.status(404).json({ error: 'Ayuntamiento no encontrado' });
+      return res.status(404).json({ error: "Ayuntamiento no encontrado" });
     }
 
     res.json(ayuntamientoActualizado);
   } catch (error) {
-    console.error('Error al actualizar ayuntamiento:', error);
-    res.status(500).json({ error: 'No se pudo actualizar el ayuntamiento' });
+    console.error("Error al actualizar ayuntamiento:", error);
+    res.status(500).json({ error: "No se pudo actualizar el ayuntamiento" });
   }
 };
 

@@ -19,7 +19,7 @@ html, body, #root {
 }
 
 .app-container {
-  padding-top: 80px;
+  padding-top: 100px;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@ html, body, #root {
 
 /**Header**/
 .header {
-  height: 80px;
+  height: 100px;
   background-color: var(--color-primary);
   position: fixed;
   top: 0;
@@ -193,4 +193,16 @@ html, body, #root {
 
 .incidencia-titulo {
   font-weight: 500;
+}
+
+.btn-primary-icon {
+  color: var(--color-primary);
+  transition: color 0.3s ease;
+}
+
+.btn-primary-icon:hover {
+  color: var(--color-secondary);
+  background-color: transparent;
+  cursor: pointer;
+  transform: scale(1.5);
 }

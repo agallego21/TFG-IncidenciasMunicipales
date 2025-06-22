@@ -27,32 +27,6 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
     ? `${API_REST_CONSTANTS.ENDPOINTS.IMAGEN(ayuntamiento.idImagen.path)}`
     : null;
 
-  const handleAltaAyuntamiento = async (formData) => {
-    try {
-      const data = new FormData();
-      data.append("municipio", formData.nombre);
-      data.append("coordenadasCentro", JSON.stringify({
-        type: "Point",
-        coordinates: [formData.coordenadas.lng, formData.coordenadas.lat],
-      }));
-      data.append("tipo", "ayuntamientos"); // necesario si tu endpoint de imagen lo requiere
-
-      if (formData.imagen) {
-        data.append("imagen", formData.imagen);
-      }
-
-      const res = await axios.post((API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS), data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log("Ayuntamiento creado:", res.data);
-    } catch (error) {
-      console.error("Error creando ayuntamiento:", error);
-    }
-  };
-
   return (
     <>
       <header className="header d-flex justify-content-between align-items-center p-2 text-white">
@@ -114,12 +88,6 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
           </div>
         )}
       </header>
-
-      <AyuntamientoModal
-        show={showAltaModal}
-        handleClose={() => setShowAltaModal(false)}
-        onSubmit={handleAltaAyuntamiento}
-      />
 
       <UsuarioModal
         show={showUsuarioModal}

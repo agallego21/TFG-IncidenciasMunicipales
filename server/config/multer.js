@@ -5,6 +5,9 @@ const fs = require('fs');
 // Configuración del almacenamiento
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
+
+console.log(req.body.tipo);
+
     const tipo = req.body.tipo || 'otros'; // 'usuarios', 'ayuntamientos', 'incidencias'
     const carpetaDestino = path.join(__dirname, `../public/images/${tipo}`);
 

@@ -220,7 +220,6 @@ export default function MapView({incidencias}) {
         </Marker>
       ))}
 
-
         {posUsuario && (
           <Marker position={posUsuario} icon={userLocationIcon} />
         )}

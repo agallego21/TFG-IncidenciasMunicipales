@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Table } from "react-bootstrap";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import AyuntamientoModal from "./AyuntamientoModal";
 import axios from "axios";
 import { API_REST_CONSTANTS } from "../config/api";
@@ -43,24 +44,28 @@ export default function GestionAyuntamientosModal({ show, onHide }) {
 
   const handleGuardar = async (formData) => {
     try {
-      if (formData.idAyuntamiento) {
-        // Actualización
-        const formData = {
-          municipio: formData.municipio,
-          coordenadasCentro: {
-            type: "Point",
-            coordinates: [formData.coordenadasCentro.lng, formData.coordenadasCentro.lat],
-          },
-        };
+      const data = new FormData();
+      data.append("municipio", formData.municipio);
+      data.append("direccionPostal", formData.direccionPostal);
+      data.append("correoElectronico", formData.correoElectronico);
+      data.append("telefono", formData.telefono);
+      data.append("fax", formData.fax);
 
-        if (formData.imagen) {
-          // Si hay nueva imagen, se necesita enviar como FormData
-          const data = new FormData();
-          data.append("municipio", formData.municipio);
-          data.append("coordenadasCentro", JSON.stringify(formData.coordenadasCentro));
-          data.append("imagen", formData.imagen);
-          data.append("tipo", "ayuntamientos");
-          
+      data.append(
+        "coordenadasCentro",
+        JSON.stringify({
+          type: "Point",
+          coordinates: [formData.coordenadasCentro.lng, formData.coordenadasCentro.lat],
+        })
+      );
+      data.append("tipo", "ayuntamientos");
+      if (formData.imagen) {
+        data.append("imagen", formData.imagen);
+      }
+
+
+      if (formData.idAyuntamiento) {
+      /**Actualización */
           await axios.put(
             `${API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS}/${formData.idAyuntamiento}`,
             data,
@@ -68,34 +73,16 @@ export default function GestionAyuntamientosModal({ show, onHide }) {
               headers: { "Content-Type": "multipart/form-data" },
             }
           );
-        } else {
-          // Si no hay imagen nueva, se puede enviar como JSON
-          await axios.put(
-            `${API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS}/${formData.idAyuntamiento}`,
-            formData
-          );
-        }
       } else {
-        // Alta nueva
-        const data = new FormData();
-        data.append("municipio", formData.municipio);
-        data.append(
-          "coordenadasCentro",
-          JSON.stringify({
-            type: "Point",
-            coordinates: [formData.coordenadasCentro.lng, formData.coordenadasCentro.lat],
-          })
-        );
-        if (formData.imagen) {
-          data.append("imagen", formData.imagen);
-          data.append("tipo", "ayuntamientos");
-        }
-
-        await axios.post(API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS, data, {
+      /** Alta nueva  */
+        await axios.post(API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS,
+          data,
+          {
           headers: {
             "Content-Type": "multipart/form-data",
-          },
+          }
         });
+
       }
 
       setShowAltaModal(false);
@@ -112,7 +99,7 @@ export default function GestionAyuntamientosModal({ show, onHide }) {
 
   return (
     <>
-      <Modal show={show} onHide={onHide} size="lg" centered>
+      <Modal show={show} onHide={onHide} size="xl" centered>
         <Modal.Header closeButton>
           <Modal.Title>Gestión de Ayuntamientos</Modal.Title>
         </Modal.Header>
@@ -127,7 +114,10 @@ export default function GestionAyuntamientosModal({ show, onHide }) {
             <thead>
               <tr>
                 <th>ID</th>
+                <th>Logo</th>
                 <th>Municipio</th>
+                <th>Dirección/Teléfono</th>
+                <th>Correo electrónico</th>
                 <th>Fecha de alta</th>
                 <th>Acciones</th>
               </tr>
@@ -137,16 +127,49 @@ export default function GestionAyuntamientosModal({ show, onHide }) {
                 ayuntamientosPaginados.map((ayto) => (
                   <tr key={ayto.idAyuntamiento}>
                     <td>{ayto.idAyuntamiento}</td>
+                    <td  style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>{ayto?.idImagen?.path && (
+                      <img
+                        src={API_REST_CONSTANTS.ENDPOINTS.IMAGEN(ayto.idImagen.path)}
+                        alt="Logo"
+                        style={{
+                          maxHeight: "40px",
+                          maxWidth: "80px",
+                          objectFit: "contain",
+                          border: "1px solid #ccc",
+                          padding: "2px",
+                          borderRadius: "4px",
+                        }}
+                      />
+                    )}
+                    </td>
                     <td>{ayto.municipio}</td>
-                    <td>{formatearFecha(ayto.createdAt)}</td>
+                    <td>{ayto.direccionPostal}
+                      <br/>
+                      {ayto.telefono}
+                    </td>
+                    <td>{ayto.correoElectronico}</td>
+                    <td>{formatearFecha(ayto.fechaAlta)}</td>
                     <td>
-                      <Button
-                        variant="outline-secondary"
-                        size="sm"
-                        onClick={() => handleEditar(ayto)}
-                      >
-                        Editar
-                      </Button>
+                    <Button 
+                      className="btn btn-link p-0 me-2 btn-primary-icon" 
+                      title="Editar" 
+                      onClick={() => handleEditar(ayto)}
+
+                    >
+                      <FaEdit size={18} />
+                    </Button>
+
+                    <Button 
+                      className="btn btn-link p-0 me-2 btn-primary-icon" 
+                      title="eliminar" 
+                      onClick={() => handleEliminar(ayto)}
+                    >
+                      <FaTrash size={18} />
+                    </Button>
                     </td>
                   </tr>
                 ))
@@ -162,7 +185,8 @@ export default function GestionAyuntamientosModal({ show, onHide }) {
 
           <div className="d-flex justify-content-center align-items-center mt-3">
             <Button
-              variant="outline-primary"
+              variant="primary"
+              className="btn-success"
               size="sm"
               disabled={paginaActual === 1}
               onClick={() => setPaginaActual(paginaActual - 1)}
@@ -174,7 +198,8 @@ export default function GestionAyuntamientosModal({ show, onHide }) {
               {Math.ceil(ayuntamientos.length / elementosPorPagina)}
             </span>
             <Button
-              variant="outline-primary"
+              variant="primary"
+              className="btn-success"
               size="sm"
               disabled={paginaActual === Math.ceil(ayuntamientos.length / elementosPorPagina)}
               onClick={() => setPaginaActual(paginaActual + 1)}
