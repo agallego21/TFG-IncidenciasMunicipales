@@ -94,7 +94,7 @@ export default function Sidebar({ visible, onClose, incidencias, incidenciasFilt
         </Button>
       </div>
 
-      <h2 className="mb-3">Incidencias registradas</h2>
+      <h4 className="mb-3">Incidencias registradas</h4>
 
       <div className="mb-3">
         <Button variant="link" className="text-white" onClick={() => setMostrarFiltros(!mostrarFiltros)}>

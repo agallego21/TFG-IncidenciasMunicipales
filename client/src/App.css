@@ -135,6 +135,7 @@ html, body, #root {
 }
 
 .filtros-container {
+  font-size: 0.85rem;
   border: 1px solid rgba(255, 255, 255, 0.3);
   background-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -142,6 +143,11 @@ html, body, #root {
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
+}
+.filtros-container select.form-select {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+  height: 30px;
 }
 
 .btn-filtrar {
@@ -151,6 +157,8 @@ html, body, #root {
   font-weight: 600;
   transition: background-color 0.3s ease;
   border-radius: 6px;
+ font-size: 0.85rem;
+  padding: 0.35rem 0;
 }
 
 .btn-filtrar:hover,
@@ -195,6 +203,7 @@ html, body, #root {
   font-weight: 500;
 }
 
+/* Iconos **/
 .btn-primary-icon {
   color: var(--color-primary);
   transition: color 0.3s ease;
@@ -205,4 +214,12 @@ html, body, #root {
   background-color: transparent;
   cursor: pointer;
   transform: scale(1.5);
+}
+
+.btn-primary-icon:focus,
+.btn-primary-icon:active {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--color-secondary); 
 }
