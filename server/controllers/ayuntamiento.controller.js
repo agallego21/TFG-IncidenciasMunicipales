@@ -85,18 +85,17 @@ exports.actualizarAyuntamiento = async (req, res) => {
 
       imagenGuardada = await nuevaImagen.save();
     }
+    
+    const ayuntamientoData = { fechaModif: new Date() };
 
-console.log(req.body);
-
-    const ayuntamientoData = {
-      municipio: req.body.municipio,
-      direccionPostal: req.body.direccionPostal,
-      correoElectronico:req.body.correoElectronico,
-      telefono:req.body.telefono,
-      fax:req.body.fax,
-      coordenadasCentro: JSON.parse(req.body.coordenadasCentro),
-      fechaModif: new Date(),
-    };
+    if (req.body.direccionPostal) ayuntamientoData.direccionPostal = req.body.direccionPostal;
+    if (req.body.correoElectronico) ayuntamientoData.correoElectronico = req.body.correoElectronico;
+    if (req.body.telefono) ayuntamientoData.telefono = req.body.telefono;
+    if (req.body.fax) ayuntamientoData.fax = req.body.fax;
+    if (req.body.coordenadasCentro) {
+      ayuntamientoData.coordenadasCentro = JSON.parse(req.body.coordenadasCentro);
+    }
+    if (req.body.estado !== undefined) ayuntamientoData.estado = parseInt(req.body.estado)
 
     // Asociar imagen si se ha subido
     if (imagenGuardada) {
@@ -104,7 +103,7 @@ console.log(req.body);
     }
 
     const ayuntamientoActualizado = await Ayuntamiento.findOneAndUpdate(
-      { idAyuntamiento: req.params.id },
+      { idAyuntamiento: req.params.idAyuntamiento },
       ayuntamientoData,
       { new: true }
     );
@@ -125,7 +124,7 @@ console.log(req.body);
 exports.eliminarAyuntamiento = async (req, res) => {
   try {
     const ayuntamiento = await Ayuntamiento.findOneAndUpdate(
-      { idAyuntamiento: req.params.id },
+      { idAyuntamiento: req.params.idAyuntamiento },
       { estado: 0, fechaModif: new Date() },
       { new: true }
     );

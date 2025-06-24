@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Row, Col } from "react-bootstrap";
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
+import { Marker, useMapEvents, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import MapaModal from "./AyuntamientoMapaModal";
@@ -17,41 +17,6 @@ L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 });
-
-function LocationSelector({ position, setPosition }) {
-  useMapEvents({
-    click(e) {
-      setPosition(e.latlng);
-    },
-  });
-  return position ? (
-    <Marker
-      position={position}
-      draggable={true}
-      eventHandlers={{
-        dragend: (e) => {
-          const nuevaPos = e.target.getLatLng();
-          setPosition(nuevaPos);
-        },
-      }}
-    />
-  ) : null;
-}
-
-function FlyToLocation({ coords }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (coords) {
-      map.flyTo([coords.lat, coords.lng], map.getZoom(), {
-        animate: true,
-        duration: 1,
-      });
-    }
-  }, [coords, map]);
-
-  return null;
-}
 
 export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntamiento }) {
   const esEdicion = ayuntamiento && ayuntamiento.idAyuntamiento !== undefined;
@@ -71,7 +36,6 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
   useEffect(() => {
     const cargarUbicacionUsuario = () => {
 
-      console.log(ayuntamiento)
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           setFormData({

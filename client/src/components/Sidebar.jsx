@@ -83,7 +83,7 @@ export default function Sidebar({ visible, onClose, incidencias, incidenciasFilt
     <aside
       className={`sidebar p-3 position-fixed start-0 shadow ${visible ? "d-block" : "d-none"} d-md-block`}
       style={{
-        height: "calc(100vh - 120px)",
+        height: "calc(100vh - 100px)",
         zIndex: 1050,
         overflowY: "auto",
       }}

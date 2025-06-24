@@ -4,7 +4,9 @@ import { BsEye, BsEyeSlash } from "react-icons/bs";
 import axios from "axios";
 import { API_REST_CONSTANTS } from "../config/api";
 
-export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
+export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
+  const esEdicion = usuario && usuario.idUsuario !== undefined;
+
   const [ayuntamientos, setAyuntamientos] = useState([]);
   const [tiposUsuario, setTiposUsuario] = useState([]);
   const [formData, setFormData] = useState({
@@ -18,7 +20,7 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
   const [enviando, setEnviando] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
 
-    useEffect(() => {
+/*  useEffect(() => {
     if (show) {
         setFormData({
         idAyuntamiento: "",
@@ -31,7 +33,7 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
         setErrorEmail("");
         setMostrarPassword(false);
     }
-    }, [show]);
+    }, [show]);*/
 
   // Obtener ayuntamientos y tipos de usuario
   useEffect(() => {
@@ -41,15 +43,42 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
           axios.get(API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS),
           axios.get(API_REST_CONSTANTS.ENDPOINTS.TIPOS_USUARIO),
         ]);
-        console.log(resAyuntamientos.data)
+
         setAyuntamientos(resAyuntamientos.data);
         setTiposUsuario(resTipos.data.filter(t => t.tipo !== 0));
       } catch (err) {
         console.error("Error al cargar datos:", err);
       }
+
+  if (show) {
+    if (esEdicion) {
+      setFormData({
+        idUsuario: usuario.idUsuario,
+        idAyuntamiento: usuario.idAyuntamiento || "",
+        tipoUsuario: usuario.tipoUsuario || "",
+        email: usuario.email || "",
+        password: "", // Por seguridad, dejamos el password vacío en edición
+        nombre: usuario.nombre || "",
+        apellidos: usuario.apellidos || "",
+      });
+      setMostrarPassword(false);
+      setErrorEmail("");
+    } else {
+      setFormData({
+        idAyuntamiento: "",
+        tipoUsuario: "",
+        email: "",
+        password: "",
+        nombre: "",
+        apellidos: "",
+      });
+      setErrorEmail("");
+      setMostrarPassword(false);
+    }
+  }
     };
     if (show) fetchData();
-  }, [show]);
+  }, [show, usuario, esEdicion]);
 
   // Comprobar si el email ya existe
   const comprobarEmail = async (email) => {
@@ -70,7 +99,7 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    if (name === "email") {
+    if (name === "email" && !esEdicion) {
       setErrorEmail("");
       if (value.includes("@")) comprobarEmail(value);
     }
@@ -79,22 +108,32 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setEnviando(true);
+
     try {
-      const res = await axios.post(API_REST_CONSTANTS.ENDPOINTS.USUARIOS, formData);
-      onUsuarioCreado?.(res.data);
-      onHide();
+      if (errorEmail) {
+        alert("Por favor, corrige los errores antes de continuar.");
+        return;
+      }
+
+//      if (esEdicion) {
+//        delete formData.email;
+//      }
+
+      await onSubmit(formData);
+      handleClose();
     } catch (err) {
-      console.error("Error creando usuario:", err);
-      alert("No se pudo crear el usuario.");
+      console.error("Error al guardar usuario:", err);
+      alert("No se pudo guardar el usuario.");
     } finally {
       setEnviando(false);
     }
   };
 
+
   return (
-    <Modal show={show} onHide={onHide} centered>
+    <Modal show={show} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Nuevo Usuario</Modal.Title>
+        <Modal.Title>{esEdicion ? "Editar Usuario" : "Nuevo Usuario"}</Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
@@ -125,39 +164,6 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              isInvalid={!!errorEmail}
-            />
-            <Form.Control.Feedback type="invalid">{errorEmail}</Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Contraseña</Form.Label>
-            <InputGroup>
-                <Form.Control
-                type={mostrarPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                />
-                <Button
-                variant="outline-secondary"
-                onClick={() => setMostrarPassword(prev => !prev)}
-                tabIndex={-1}
-                >
-                {mostrarPassword ? <BsEyeSlash /> : <BsEye />}
-                </Button>
-            </InputGroup>
-          </Form.Group>
-
-          <Form.Group className="mb-3">
             <Form.Label>Nombre</Form.Label>
             <Form.Control name="nombre" value={formData.nombre} onChange={handleChange} required />
           </Form.Group>
@@ -166,11 +172,59 @@ export default function UsuarioModal({ show, onHide, onUsuarioCreado }) {
             <Form.Label>Apellidos</Form.Label>
             <Form.Control name="apellidos" value={formData.apellidos} onChange={handleChange} required />
           </Form.Group>
+
+<Form.Group className="mb-3">
+  <Form.Label>Email</Form.Label>
+  {esEdicion ? (
+    // Mostrar email como texto estático, sin input
+    <div className="form-control-plaintext">{formData.email}</div>
+  ) : (
+    // En modo creación, mostrar input editable
+    <Form.Control
+      type="email"
+      name="email"
+      value={formData.email}
+      onChange={handleChange}
+      required
+      isInvalid={!!errorEmail}
+    />
+  )}
+  {!esEdicion && (
+    <Form.Control.Feedback type="invalid">{errorEmail}</Form.Control.Feedback>
+  )}
+</Form.Group>
+
+          {!esEdicion && (
+            <Form.Group className="mb-3">
+              <Form.Label>Contraseña</Form.Label>
+              <InputGroup>
+                  <Form.Control
+                  type={mostrarPassword ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  />
+                  <Button
+                  variant="outline-secondary"
+                  onClick={() => setMostrarPassword(prev => !prev)}
+                  tabIndex={-1}
+                  >
+                  {mostrarPassword ? <BsEyeSlash /> : <BsEye />}
+                  </Button>
+              </InputGroup>
+            </Form.Group>
+          )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={onHide}>Cancelar</Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancelar
+          </Button>
+          
           <Button variant="primary" className="btn-success" type="submit" disabled={enviando || errorEmail}>
-            Crear usuario
+          {enviando
+            ? (esEdicion ? "Guardando..." : "Creando...")
+            : (esEdicion ? "Guardar cambios" : "Crear usuario")}
           </Button>
         </Modal.Footer>
       </Form>
