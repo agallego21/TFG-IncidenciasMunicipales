@@ -11,6 +11,7 @@ export const API_REST_CONSTANTS = {
       `${BASE_URL}/usuarios?email=${encodeURIComponent(email)}`,
     TIPOS_USUARIO: `${BASE_URL}/tiposUsuario`,
     INCIDENCIAS: `${BASE_URL}/incidencias`,
+    INCIDENCIAS_AYTO: `${BASE_URL}/incidencias/ayuntamiento`,
     TIPOS_INCIDENCIA: `${BASE_URL}/tiposIncidencia`,
     ESTADOS_INCIDENCIA: `${BASE_URL}/estadosIncidencia`,
     IMAGEN: (path) => 

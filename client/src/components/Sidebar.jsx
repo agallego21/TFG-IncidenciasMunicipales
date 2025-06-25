@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Modal, Card, Button, Carousel, Form, Collapse } from "react-bootstrap";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes, FaSync } from "react-icons/fa";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
 import { UserContext } from "../context/UserContext";
 import IncidenciaCard from "./IncidenciaCard";
 import { API_REST_CONSTANTS } from "../config/api";
 
-export default function Sidebar({ visible, onClose, incidencias, incidenciasFiltradas, setIncidenciasFiltradas }) {
+export default function Sidebar({ visible, onClose, incidencias, incidenciasFiltradas, setIncidenciasFiltradas, recargarIncidencias }) {
   const { usuario } = useContext(UserContext);
   const [tiposIncidencia, setTiposIncidencia] = useState([]);
   const [estadosIncidencia, setEstadosIncidencia] = useState([]);
@@ -94,7 +94,17 @@ export default function Sidebar({ visible, onClose, incidencias, incidenciasFilt
         </Button>
       </div>
 
-      <h4 className="mb-3">Incidencias registradas</h4>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h4 className="mb-0">Incidencias registradas</h4>
+        <Button
+          variant="outline-light"
+          size="sm"
+          title="Actualizar incidencias"
+          onClick={recargarIncidencias}
+        >
+          <FaSync />
+        </Button>
+      </div>
 
       <div className="mb-3">
         <Button variant="link" className="text-white" onClick={() => setMostrarFiltros(!mostrarFiltros)}>

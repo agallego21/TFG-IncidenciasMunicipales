@@ -191,8 +191,9 @@ const obtenerIncidenciasPorUsuario = async (req, res) => {
 
 const actualizarIncidencia = async (req, res) => {
   try {
+  console.log(req.body)
     const actualizada = await Incidencia.findOneAndUpdate(
-      { idIncidencia: req.params.id },
+      { _id: req.params.id },
       req.body,
       { new: true }
     );

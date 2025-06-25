@@ -157,8 +157,7 @@ html, body, #root {
   font-weight: 600;
   transition: background-color 0.3s ease;
   border-radius: 6px;
- font-size: 0.85rem;
-  padding: 0.35rem 0;
+  font-size: 0.85rem;
 }
 
 .btn-filtrar:hover,
@@ -222,4 +221,20 @@ html, body, #root {
   box-shadow: none !important;
   outline: none !important;
   color: var(--color-secondary); 
+}
+
+/* Tablas */
+.custom-table thead {
+  background-color: #328e6e !important;
+  color: white !important;
+}
+
+.table-head-custom {
+  background-color: #328e6e !important;
+  color: white !important;
+}
+
+.modal-xxl {
+  max-width: 95% !important;
+  width: 95% !important;
 }

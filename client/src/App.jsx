@@ -19,6 +19,16 @@ export default function App() {
   const [incidencias, setIncidencias] = useState([]);
   const [incidenciasFiltradas, setIncidenciasFiltradas] = useState([]);
 
+  const obtenerIncidencias = async () => {
+    if (!ayuntamiento) return;
+    try {
+      const res = await axios.get(`http://localhost:5005/incidencias/ayuntamiento/${ayuntamiento.idAyuntamiento}`);
+      setIncidencias(res.data);
+    } catch (error) {
+      console.error("Error al obtener incidencias:", error);
+    }
+  };
+
   useEffect(() => {
     setIncidenciasFiltradas(incidencias);
   }, [incidencias]);
@@ -31,15 +41,6 @@ export default function App() {
 
   //carga de incidencias cuando cambia ayuntamiento
   useEffect(() => {
-    const obtenerIncidencias = async () => {
-      if (!ayuntamiento) return;
-      try {
-        const res = await axios.get(`http://localhost:5005/incidencias/ayuntamiento/${ayuntamiento.idAyuntamiento}`);
-        setIncidencias(res.data);
-      } catch (error) {
-        console.error("Error al obtener incidencias:", error);
-      }
-    };
     obtenerIncidencias();
   }, [ayuntamiento]);
 
@@ -72,6 +73,7 @@ export default function App() {
           incidencias={incidencias}
           incidenciasFiltradas={incidenciasFiltradas}
           setIncidenciasFiltradas={setIncidenciasFiltradas}
+          recargarIncidencias={obtenerIncidencias}
         />
         <MapView incidencias={incidenciasFiltradas} />
       </div>
