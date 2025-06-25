@@ -129,20 +129,20 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
 
         {/* Tabla de incidencias */}
         <Table bordered hover responsive size="sm" className="small">
-          <thead className="table-head-custom">
+          <thead>
             <tr>
-              <th>Fecha alta</th>
-              <th>Título/Descripción</th>
-              <th>Dirección</th>
-              <th>Tipo</th>
-              <th>Estado</th>
-              <th>Acciones</th>
+              <th className="table-head-custom">Fecha alta</th>
+              <th className="table-head-custom">Título/Descripción</th>
+              <th className="table-head-custom">Dirección</th>
+              <th className="table-head-custom">Tipo</th>
+              <th className="table-head-custom">Estado</th>
+              <th className="table-head-custom">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {incidenciasPaginadas.length > 0 ? (
               incidenciasPaginadas.map(inc => (
-                <tr key={inc._id}>
+                <tr key={inc._id} className={ediciones[inc._id] ? "fila-modificada" : ""}>
                   <td>{formatearFecha(inc.fechaRegistro)}</td>
                   <td>
                     <div className="fw-bold">{inc.titulo}</div>
@@ -210,14 +210,25 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
                         <FaMapMarkedAlt size={18}/>
                     </Button>
 
-                    <Button
+
+                    {ediciones[inc._id] ? (
+                      <Button
                         className="btn btn-link p-0 me-2 btn-primary-icon"
                         size="sm"
                         onClick={() => guardarCambiosIncidencia(inc._id)}
-                        title="Guardar Cambios"
-                        >
+                        title="Ver imágenes"
+                      >
                         <FaRegSave size={18}/>
-                    </Button>
+                      </Button>
+                    ) : (
+                        <FaRegSave
+                            size={18}
+                            className="text-secondary me-2"
+                            title="Sin imágenes"
+                            style={{ opacity: 0.5, cursor: "not-allowed" }}
+                        />
+                    )}
+
                   </td>
                 </tr>
               ))

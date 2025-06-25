@@ -207,15 +207,15 @@ export default function GestionUsuariosModal({ show, onHide }) {
             </Button>
           </Form>
 
-          <Table striped bordered hover responsive>
+          <Table striped bordered hover responsive className="small">
             <thead>
               <tr>
-                <th>Nombre</th>
-                <th>Apellidos</th>
-                <th>Email</th>
-                <th>Tipo Usuario</th>
-                <th>Ayuntamiento</th>
-                <th>Acciones</th>
+                <th className="table-head-custom">Nombre</th>
+                <th className="table-head-custom">Apellidos</th>
+                <th className="table-head-custom">Email</th>
+                <th className="table-head-custom">Tipo Usuario</th>
+                <th className="table-head-custom">Ayuntamiento</th>
+                <th className="table-head-custom">Acciones</th>
               </tr>
             </thead>
             <tbody>

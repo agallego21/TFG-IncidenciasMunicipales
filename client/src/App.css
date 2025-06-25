@@ -234,6 +234,11 @@ html, body, #root {
   color: white !important;
 }
 
+.fila-modificada td {
+  font-style: italic;
+  background-color: #def0e9;
+}
+
 .modal-xxl {
   max-width: 95% !important;
   width: 95% !important;

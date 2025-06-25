@@ -169,16 +169,16 @@ export default function GestionAyuntamientosModal({ show, onHide }) {
             </Button>
           </div>
 
-          <Table striped bordered hover responsive>
+          <Table striped bordered hover responsive className="small">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Logo</th>
-                <th>Municipio</th>
-                <th>Dirección/Teléfono</th>
-                <th>Correo electrónico</th>
-                <th>Fecha de alta</th>
-                <th>Acciones</th>
+                <th className="table-head-custom">ID</th>
+                <th className="table-head-custom">Logo</th>
+                <th className="table-head-custom">Municipio</th>
+                <th className="table-head-custom">Dirección/Teléfono</th>
+                <th className="table-head-custom">Correo electrónico</th>
+                <th className="table-head-custom">Fecha de alta</th>
+                <th className="table-head-custom">Acciones</th>
               </tr>
             </thead>
             <tbody>
