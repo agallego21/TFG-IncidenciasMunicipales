@@ -225,12 +225,12 @@ html, body, #root {
 
 /* Tablas */
 .custom-table thead {
-  background-color: #328e6e !important;
+  background-color: var(--color-primary) !important;
   color: white !important;
 }
 
 .table-head-custom {
-  background-color: #328e6e !important;
+  background-color: var(--color-primary) !important;
   color: white !important;
 }
 
