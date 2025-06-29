@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, Table, Form } from "react-bootstrap";
-import { FaCamera, FaMapMarkedAlt, FaRegSave} from "react-icons/fa";
+import { FaCamera, FaMapMarkedAlt, FaRegSave, FaWpforms} from "react-icons/fa";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import AlertModal from './AlertModal';
 import axios from 'axios';
 import { API_REST_CONSTANTS } from "../config/api";
 
 export default function GestionIncidenciasModal({ show, onHide, incidencias, estadosIncidencia, tiposIncidencia, onVerImagenes, onRecargarIncidencias}) {
   const [filtroEstado, setFiltroEstado] = useState("");
   const [filtroTipo, setFiltroTipo] = useState("");
+  const [filtroFechaDesde, setFiltroFechaDesde] = useState("");
+  const [filtroFechaHasta, setFiltroFechaHasta] = useState("");
   const [paginaActual, setPaginaActual] = useState(1);
   const elementosPorPagina = 10;
 
@@ -22,17 +25,38 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
     setMostrarMapa(true);
   };
 
+  const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [mensajeAlerta, setMensajeAlerta] = useState('');
+  const mostrarAlertaModal = (mensaje) => {
+    setMensajeAlerta(mensaje);
+    setMostrarAlerta(true);
+  };
+
   //Para editar incidencia
   const [ediciones, setEdiciones] = useState({});
   const editarIncidencia = (id, campo, valor) => {
-    setEdiciones(prev => ({
-        ...prev,
-        [id]: {
+    setEdiciones(prev => {
+        const nuevosCambios = {
         ...prev[id],
         [campo]: valor,
+        };
+
+        // Si se está editando el campo 'resolucion' y no está vacío, añadimos la fecha de resolución
+        if (campo === "textoResolucion" && valor.trim() !== "") {
+            nuevosCambios.fechaResolucion = new Date().toISOString(); // formato timestamp
         }
-    }));
+
+        return {
+        ...prev,
+            [id]: nuevosCambios,
+        };
+    });
   };
+
+  // Texto resolución de incidencia
+  const [mostrarModalResolucion, setMostrarModalResolucion] = useState(false);
+  const [idIncidenciaResolviendo, setIdIncidenciaResolviendo] = useState(null);
+  const [textoResolucion, setTextoResolucion] = useState("");
 
   const guardarCambiosIncidencia = async (id) => {
     const cambios = ediciones[id];
@@ -45,7 +69,7 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
             {headers: {"Content-Type": "application/json",},}
         );
 
-        alert("Incidencia modificada correctamente.");
+        mostrarAlertaModal("Incidencia modificada con éxito.");
 
         // Limpia los cambios locales
         setEdiciones((prev) => {
@@ -67,12 +91,21 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
   // Reiniciar página al cambiar filtros
   useEffect(() => {
     setPaginaActual(1);
-  }, [filtroEstado, filtroTipo]);
+  }, [filtroEstado, filtroTipo, filtroFechaDesde, filtroFechaHasta]);
 
   // Aplicar filtros
   const incidenciasFiltradas = incidencias
     .filter(i => (filtroEstado === "" || String(i.estado) === filtroEstado))
-    .filter(i => (filtroTipo === "" || String(i.tipoIncidencia) === filtroTipo));
+    .filter(i => (filtroTipo === "" || String(i.tipoIncidencia) === filtroTipo))
+    .filter(i => {
+        const fechaIncidencia = new Date(i.fechaRegistro);
+        const desde = filtroFechaDesde ? new Date(filtroFechaDesde) : null;
+        const hasta = filtroFechaHasta ? new Date(filtroFechaHasta) : null;
+
+        if (desde && fechaIncidencia < desde) return false;
+        if (hasta && fechaIncidencia > hasta) return false;
+        return true;
+    });
 
   // Paginación
   const indiceUltimo = paginaActual * elementosPorPagina;
@@ -92,10 +125,10 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
       </Modal.Header>
 
       <Modal.Body>
-        {/* Filtros en la misma línea */}
+        {/* Filtros */}
         <div className="d-flex align-items-center gap-3 mb-3">
           <Form.Group controlId="filtroEstado" className="mb-0">
-            <Form.Label className="mb-1">Estado</Form.Label>
+            <Form.Label className="mb-1 small label-campoForm">Estado</Form.Label>
             <Form.Select
               value={filtroEstado}
               onChange={e => setFiltroEstado(e.target.value)}
@@ -111,7 +144,7 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
           </Form.Group>
 
           <Form.Group controlId="filtroTipo" className="mb-0">
-            <Form.Label className="mb-1">Tipo</Form.Label>
+            <Form.Label className="mb-1 small label-campoForm">Tipo</Form.Label>
             <Form.Select
               value={filtroTipo}
               onChange={e => setFiltroTipo(e.target.value)}
@@ -125,6 +158,26 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
               ))}
             </Form.Select>
           </Form.Group>
+          
+          <Form.Group controlId="filtroFechaDesde" className="mb-0">
+            <Form.Label className="mb-1 small label-campoForm">Fecha Registro desde</Form.Label>
+            <Form.Control
+                type="date"
+                size="sm"
+                value={filtroFechaDesde}
+                onChange={e => setFiltroFechaDesde(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="filtroFechaHasta" className="mb-0">
+            <Form.Label className="mb-1 small label-campoForm">Fecha Registro hasta</Form.Label>
+            <Form.Control
+                type="date"
+                size="sm"
+                value={filtroFechaHasta}
+                onChange={e => setFiltroFechaHasta(e.target.value)}
+            />
+            </Form.Group>
         </div>
 
         {/* Tabla de incidencias */}
@@ -143,7 +196,7 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
             {incidenciasPaginadas.length > 0 ? (
               incidenciasPaginadas.map(inc => (
                 <tr key={inc._id} className={ediciones[inc._id] ? "fila-modificada" : ""}>
-                  <td>{formatearFecha(inc.fechaRegistro)}</td>
+                  <td className="text-center">{formatearFecha(inc.fechaRegistro)}</td>
                   <td>
                     <div className="fw-bold">{inc.titulo}</div>
                     <div>{inc.descripcion}</div>
@@ -169,12 +222,15 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
                     <td>
                     <Form.Select
                         size="sm"
-                        value={
-                        ediciones[inc._id]?.estado ?? inc.estado
-                        }
-                        onChange={e =>
-                        editarIncidencia(inc._id, "estado", e.target.value)
-                        }
+                        value={ediciones[inc._id]?.estado ?? inc.estado}
+                        onChange={e => {
+                            const nuevoEstado = e.target.value;
+                            if (nuevoEstado === "3") {
+                            setIdIncidenciaResolviendo(inc._id);
+                            setMostrarModalResolucion(true);
+                            }
+                            editarIncidencia(inc._id, "estado", nuevoEstado);
+                        }}
                     >
                         {estadosIncidencia.map(e => (
                         <option key={e.idEstado} value={e.idEstado}>
@@ -210,6 +266,27 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
                         <FaMapMarkedAlt size={18}/>
                     </Button>
 
+                    {(inc.textoResolucion || ediciones[inc._id]?.textoResolucion) ? (
+                      <Button
+                        className="btn btn-link p-0 me-2 btn-primary-icon"
+                        size="sm"
+                        onClick={() => {
+                            setIdIncidenciaResolviendo(inc._id);
+                            setTextoResolucion(inc.textoResolucion);
+                            setMostrarModalResolucion(true);
+                        }}
+                        title="Ver Respuesta/Resolución"
+                      >
+                        <FaWpforms size={18}/>
+                      </Button>
+                    ) : (
+                        <FaWpforms
+                            size={18}
+                            className="text-secondary me-2"
+                            title="Sin Respuesta/Resolución"
+                            style={{ opacity: 0.5, cursor: "not-allowed" }}
+                        />
+                    )}
 
                     {ediciones[inc._id] ? (
                       <Button
@@ -294,6 +371,43 @@ export default function GestionIncidenciasModal({ show, onHide, incidencias, est
     </Modal.Body>
     </Modal>
 
+    <Modal show={mostrarModalResolucion} onHide={() => setMostrarModalResolucion(false)} centered>
+    <Modal.Header closeButton>
+        <Modal.Title>Resolver Incidencia</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
+        <Form.Group>
+        <Form.Control
+            as="textarea"
+            rows={4}
+            value={textoResolucion}
+            onChange={e => setTextoResolucion(e.target.value)}
+            placeholder="Escribe la respuesta/resolución aquí..."
+        />
+        </Form.Group>
+    </Modal.Body>
+    <Modal.Footer>
+        <Button variant="secondary" onClick={() => setMostrarModalResolucion(false)}>
+        Cancelar
+        </Button>
+        <Button
+        variant="success"
+        onClick={() => {
+            editarIncidencia(idIncidenciaResolviendo, "textoResolucion", textoResolucion);
+            setMostrarModalResolucion(false);
+            setTextoResolucion("");
+        }}
+        >
+        Guardar resolución
+        </Button>
+    </Modal.Footer>
+    </Modal>
+
+    <AlertModal
+    show={mostrarAlerta}
+    onClose={() => setMostrarAlerta(false)}
+    message={mensajeAlerta}
+    />
     </>
   );
 }

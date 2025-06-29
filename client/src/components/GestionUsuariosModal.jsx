@@ -4,11 +4,13 @@ import axios from "axios";
 import UsuarioModal from "./UsuarioModal";
 import ConfirmModal from "./ConfirmModal";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { useUser } from "../context/UserContext";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
 import { API_REST_CONSTANTS } from "../config/api";
 
 export default function GestionUsuariosModal({ show, onHide }) {
   const { ayuntamientos } = useAyuntamiento();
+  const { usuario } = useUser();
   const [usuarios, setUsuarios] = useState([]);
   const [tiposUsuario, setTiposUsuario] = useState([]);
   const [listaAyuntamientos, setListaAyuntamientos] = useState([]);
@@ -35,33 +37,35 @@ export default function GestionUsuariosModal({ show, onHide }) {
     setMostrarConfirmacion(true);
   };
 
+    // Función para cargar usuarios
+  async function obtenerUsuarios() {
+    try {
+      const baseURL = API_REST_CONSTANTS.ENDPOINTS.USUARIOS;
+
+      const params = new URLSearchParams();
+
+      if (filtroTipo !== undefined && filtroTipo !== '') {
+        params.append('tipoUsuario', filtroTipo);
+      }
+      if (usuario?.tipoUsuario === 1 || usuario?.tipoUsuario === 2) {
+        params.append('idAyuntamiento', usuario.idAyuntamiento);
+      } else if (filtroAyuntamiento !== undefined && filtroAyuntamiento !== '') {
+        params.append('idAyuntamiento', filtroAyuntamiento);
+      }
+
+      const url = `${baseURL}?${params.toString()}`;
+      const res = await axios.get(url);
+
+      setUsuarios(res.data);
+      setPaginaActual(1);
+    } catch (error) {
+      console.error("Error al cargar usuarios:", error);
+    }
+  }
+
   // Cargar usuarios filtrados
   useEffect(() => {
-    async function obtenerUsuarios() {
-        try {
-            const baseURL = API_REST_CONSTANTS.ENDPOINTS.USUARIOS;
-
-            const params = new URLSearchParams();
-
-            if (filtroTipo !== undefined && filtroTipo !== '') {
-                params.append('tipoUsuario', filtroTipo);
-            }
-            if (filtroAyuntamiento !== undefined && filtroAyuntamiento !== '') {
-                params.append('idAyuntamiento', filtroAyuntamiento);
-            }
-
-            const url = `${baseURL}?${params.toString()}`;
-            const res = await axios.get(url);
-
-            setUsuarios(res.data);
-            
-            setPaginaActual(1);
-        } catch (error) {
-            console.error("Error al cargar usuarios:", error);
-        }
-    }
-
-    if (show) {
+     if (show) {
       obtenerUsuarios();
     }
   }, [filtroTipo, filtroAyuntamiento, show]);
@@ -111,6 +115,8 @@ export default function GestionUsuariosModal({ show, onHide }) {
   };
 
   const handleGuardar = async (formData) => {
+
+console.log(formData)
     try {
       if (formData.idUsuario) {
         // Edición
@@ -124,12 +130,7 @@ export default function GestionUsuariosModal({ show, onHide }) {
       setShowUsuarioModal(false);
 
       // Recargar usuarios tras guardar
-      const baseURL = API_REST_CONSTANTS.ENDPOINTS.USUARIOS;
-      const params = new URLSearchParams();
-      if (filtroTipo) params.append("tipoUsuario", filtroTipo);
-      if (filtroAyuntamiento) params.append("idAyuntamiento", filtroAyuntamiento);
-      const res = await axios.get(`${baseURL}?${params.toString()}`);
-      setUsuarios(res.data);
+      obtenerUsuarios();
 
     } catch (error) {
       console.error("Error guardando usuario:", error);
@@ -144,13 +145,8 @@ export default function GestionUsuariosModal({ show, onHide }) {
           try {
             await axios.delete(`${API_REST_CONSTANTS.ENDPOINTS.USUARIOS}/${usuario.idUsuario}`);
 
-            // Recargar usuarios tras eliminación
-            const baseURL = API_REST_CONSTANTS.ENDPOINTS.USUARIOS;
-            const params = new URLSearchParams();
-            if (filtroTipo) params.append("tipoUsuario", filtroTipo);
-            if (filtroAyuntamiento) params.append("idAyuntamiento", filtroAyuntamiento);
-            const res = await axios.get(`${baseURL}?${params.toString()}`);
-            setUsuarios(res.data);
+            // Recargar usuarios tras guardar
+            obtenerUsuarios();
           } catch (error) {
             console.error("Error eliminando usuario:", error);
             alert("No se pudo eliminar el usuario. Revisa los logs o la consola para más detalles.");
@@ -182,22 +178,23 @@ export default function GestionUsuariosModal({ show, onHide }) {
                 ))}
               </Form.Select>
             </Form.Group>
-
-            <Form.Group controlId="filtroAyuntamiento" style={{ minWidth: "150px" }}>
-              <Form.Label>Ayuntamiento</Form.Label>
-              <Form.Select
-                value={filtroAyuntamiento}
-                onChange={(e) => setFiltroAyuntamiento(e.target.value)}
-              >
-                <option value="">Todos</option>
-                {listaAyuntamientos?.map((ayto) => (
-                  <option key={ayto.idAyuntamiento} value={ayto.idAyuntamiento}>
-                    {ayto.municipio}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-
+            {/* Sólo se muestra si el usuario es Adminsitrador General */}
+            {(usuario?.tipoUsuario === 0) && (
+              <Form.Group controlId="filtroAyuntamiento" style={{ minWidth: "150px" }}>
+                <Form.Label>Ayuntamiento</Form.Label>
+                <Form.Select
+                  value={filtroAyuntamiento}
+                  onChange={(e) => setFiltroAyuntamiento(e.target.value)}
+                >
+                  <option value="">Todos</option>
+                  {listaAyuntamientos?.map((ayto) => (
+                    <option key={ayto.idAyuntamiento} value={ayto.idAyuntamiento}>
+                      {ayto.municipio}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
+            )}
             <Button variant="primary" 
               onClick={handleNuevoUsuario} 
               className="btn-success ms-auto" 
@@ -227,7 +224,7 @@ export default function GestionUsuariosModal({ show, onHide }) {
                 </tr>
               ) : (
                 usuariosPaginados.map((usuario) => (
-                  <tr key={usuario._id}>
+                  <tr key={usuario.idUsuario}>
                     <td>{usuario.nombre}</td>
                     <td>{usuario.apellidos}</td>
                     <td>{usuario.email}</td>

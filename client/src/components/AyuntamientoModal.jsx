@@ -144,7 +144,7 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
           <Row className="mb-2">
             <Col md={6}>
               <Form.Group>
-                <Form.Label>Municipio *</Form.Label>
+                <Form.Label className="label-campoForm">Municipio *</Form.Label>
                 <Form.Control
                   type="text"
                   name="municipio"
@@ -157,7 +157,7 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
 
             <Col md={6}>
               <Form.Group>
-                <Form.Label>Correo electrónico</Form.Label>
+                <Form.Label className="label-campoForm">Correo electrónico</Form.Label>
                 <Form.Control
                   type="email"
                   name="correoElectronico"
@@ -171,7 +171,7 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
           </Row>
 
           <Form.Group className="mb-2">
-            <Form.Label>Dirección</Form.Label>
+            <Form.Label className="label-campoForm">Dirección</Form.Label>
             <Form.Control
               type="text"
               name="direccionPostal"
@@ -183,7 +183,7 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
           <Row className="mb-2">
             <Col md={6}>
               <Form.Group>
-                <Form.Label>Teléfono</Form.Label>
+                <Form.Label className="label-campoForm">Teléfono</Form.Label>
               <Form.Control
                 type="text"
                 name="telefono"
@@ -196,7 +196,7 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
 
             <Col md={6}>
               <Form.Group>
-                <Form.Label>Fax</Form.Label>
+                <Form.Label className="label-campoForm">Fax</Form.Label>
                 <Form.Control
                   type="text"
                   name="fax"
@@ -209,7 +209,7 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
           </Row>
 
           <Form.Group className="mb-3">
-            <Form.Label>Logo del ayuntamiento</Form.Label>
+            <Form.Label className="label-campoForm">Logo del ayuntamiento</Form.Label>
             <div className="d-flex align-items-center gap-3">
               {esEdicion && ayuntamiento?.idImagen?.path && (
                 <img
@@ -239,7 +239,7 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
           </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Coordenadas Centro *</Form.Label>
+              <Form.Label className="label-campoForm">Coordenadas Centro *</Form.Label>
               <div className="d-flex align-items-center gap-2">
                 <Form.Control
                   type="text"
@@ -250,8 +250,10 @@ export default function AyuntamientoModal({ show, handleClose, onSubmit, ayuntam
                       : ""
                   }
                 />
-                <Button variant="outline-primary" onClick={() => setMapaVisible(true)}>
-                  <FaMapMarkerAlt />
+                <Button className="btn btn-link p-0 me-2 btn-primary-icon"
+                        size="sm"
+                         onClick={() => setMapaVisible(true)}>
+                  <FaMapMarkerAlt size={20} />
                 </Button>
               </div>
               <small className="text-muted">Haz clic en el icono para seleccionar la ubicación en el mapa.</small>

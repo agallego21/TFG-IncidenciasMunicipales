@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { useUser } from "../context/UserContext";
 import axios from "axios";
 import { API_REST_CONSTANTS } from "../config/api";
 
 export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
   const esEdicion = usuario && usuario.idUsuario !== undefined;
+const { usuario: usuarioConectado } = useUser();
+//    if (!usuarioConectado) return null;
 
   const [ayuntamientos, setAyuntamientos] = useState([]);
   const [tiposUsuario, setTiposUsuario] = useState([]);
@@ -19,21 +22,6 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
   const [errorEmail, setErrorEmail] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
-
-/*  useEffect(() => {
-    if (show) {
-        setFormData({
-        idAyuntamiento: "",
-        tipoUsuario: "",
-        email: "",
-        password: "",
-        nombre: "",
-        apellidos: "",
-        });
-        setErrorEmail("");
-        setMostrarPassword(false);
-    }
-    }, [show]);*/
 
   // Obtener ayuntamientos y tipos de usuario
   useEffect(() => {
@@ -51,7 +39,7 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
       }
 
   if (show) {
-    if (esEdicion) {
+    if (usuario && esEdicion) {
       setFormData({
         idUsuario: usuario.idUsuario,
         idAyuntamiento: usuario.idAyuntamiento || "",
@@ -65,7 +53,7 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
       setErrorEmail("");
     } else {
       setFormData({
-        idAyuntamiento: "",
+        idAyuntamiento: usuarioConectado.tipousuario===0?"":usuarioConectado.idAyuntamiento,
         tipoUsuario: "",
         email: "",
         password: "",
@@ -115,10 +103,6 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
         return;
       }
 
-//      if (esEdicion) {
-//        delete formData.email;
-//      }
-
       await onSubmit(formData);
       handleClose();
     } catch (err) {
@@ -139,16 +123,35 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>Ayuntamiento</Form.Label>
-            <Form.Select name="idAyuntamiento"
+            {usuarioConectado && usuarioConectado.tipoUsuario === 0 ? (
+              <Form.Select
+                name="idAyuntamiento"
                 value={formData.idAyuntamiento}
-                onChange={handleChange} required>
-              <option value="">Selecciona un ayuntamiento</option>
-              {ayuntamientos.map((ayuntamiento) => (
-                <option key={ayuntamiento.idAyuntamiento} value={ayuntamiento.idAyuntamiento}>
-                  Ayuntamiento de {ayuntamiento.municipio}
-                </option>
-              ))}
-            </Form.Select>
+                onChange={handleChange}
+                required
+              >
+                <option value="">Selecciona un ayuntamiento</option>
+                {ayuntamientos.map((ayuntamiento) => (
+                  <option key={ayuntamiento.idAyuntamiento} value={ayuntamiento.idAyuntamiento}>
+                    Ayuntamiento de {ayuntamiento.municipio}
+                  </option>
+                ))}
+              </Form.Select>
+            ) : (
+              <>
+                <div className="form-control-plaintext">
+                  Ayuntamiento de{" "}
+                  {
+                    ayuntamientos.find((a) => a.idAyuntamiento === usuarioConectado.idAyuntamiento)?.municipio || ""
+                  }
+                </div>
+                <input
+                  type="hidden"
+                  name="idAyuntamiento"
+                  value={usuarioConectado?.idAyuntamiento}
+                />
+              </>
+            )}
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -173,26 +176,26 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
             <Form.Control name="apellidos" value={formData.apellidos} onChange={handleChange} required />
           </Form.Group>
 
-<Form.Group className="mb-3">
-  <Form.Label>Email</Form.Label>
-  {esEdicion ? (
-    // Mostrar email como texto estático, sin input
-    <div className="form-control-plaintext">{formData.email}</div>
-  ) : (
-    // En modo creación, mostrar input editable
-    <Form.Control
-      type="email"
-      name="email"
-      value={formData.email}
-      onChange={handleChange}
-      required
-      isInvalid={!!errorEmail}
-    />
-  )}
-  {!esEdicion && (
-    <Form.Control.Feedback type="invalid">{errorEmail}</Form.Control.Feedback>
-  )}
-</Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            {esEdicion ? (
+              // Mostrar email como texto estático, sin input
+              <div className="form-control-plaintext">{formData.email}</div>
+            ) : (
+              // En modo creación, mostrar input editable
+              <Form.Control
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                isInvalid={!!errorEmail}
+              />
+            )}
+            {!esEdicion && (
+              <Form.Control.Feedback type="invalid">{errorEmail}</Form.Control.Feedback>
+            )}
+          </Form.Group>
 
           {!esEdicion && (
             <Form.Group className="mb-3">

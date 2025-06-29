@@ -95,7 +95,10 @@ export default function LoginModal({ show, handleClose, ayuntamiento }) {
             />
           </Form.Group>
 
-          <Button variant="primary" type="submit" className="mt-4 w-100">
+          <Button
+            variant="primary"
+            className="mt-4 w-100 btn-success"
+            size="sm" type="submit">
             Iniciar sesión
           </Button>
         </Form>

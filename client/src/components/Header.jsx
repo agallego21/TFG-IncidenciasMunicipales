@@ -80,7 +80,7 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
               &nbsp;<b>Hola, {usuario.nombre} {usuario.apellidos}!</b>
             </div>
 
-            {(usuario.tipoUsuario === 0 || usuario.tipoUsuario === 1) && (
+            {(usuario.tipoUsuario !== 3) && (
               <Dropdown>
                 <Dropdown.Toggle className="dropdown-admin" size="sm">
                   Opciones de administrador
@@ -94,9 +94,11 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
                   <Dropdown.Item onClick={() => setShowGestionUsuarios(true)}>
                     Gestión de usuarios
                   </Dropdown.Item>
+                  {(usuario.tipoUsuario === 1 || usuario.tipoUsuario === 2) && (
                   <Dropdown.Item onClick={() => setShowGestionIncidencias(true)}>
                     Gestión de incidencias
                   </Dropdown.Item>
+                  )}
                 </Dropdown.Menu>
               </Dropdown>
             )}

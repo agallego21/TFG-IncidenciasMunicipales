@@ -8,6 +8,8 @@ import {useUser } from "../context/UserContext";
 import IncidenciaModal from "./IncidenciaModal";
 import { createSvgIcon } from '../utils/leafletIcons';
 
+import { API_REST_CONSTANTS } from "../config/api";
+
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -212,10 +214,39 @@ export default function MapView({incidencias}) {
             incidencia.coordenadas.coordinates[0],
           ]}
         >
-          <Popup>
-            <strong>{incidencia.titulo}</strong><br />
-            {incidencia.direccion}<br />
-            {incidencia.estado}
+        <Popup>
+          <div style={{ minWidth: "200px" }}>
+            <h6 style={{ marginBottom: "4px", fontWeight: "bold" }}>{incidencia.titulo}</h6>
+            <p style={{ fontSize: "0.9em", margin: 0 }}>
+              {incidencia.direccion}
+            </p>
+
+          {incidencia.imagenes && incidencia.imagenes.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                overflowX: "auto",
+                gap: "8px",
+                marginTop: "8px",
+              }}
+            >
+              {incidencia.imagenes.map((imgUrl, idx) => (
+                <img
+                  key={idx}
+                  src={API_REST_CONSTANTS.ENDPOINTS.IMAGEN(imgUrl.url)}
+                  alt={`Imagen ${idx + 1}`}
+                  style={{
+                    width: "80px",
+                    height: "60px",
+                    objectFit: "cover",
+                    borderRadius: "6px",
+                    flex: "0 0 auto",
+                  }}
+                />
+              ))}
+            </div>
+          )}
+            </div>
           </Popup>
         </Marker>
       ))}
