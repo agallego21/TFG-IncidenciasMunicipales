@@ -44,6 +44,26 @@ html, body, #root {
   color: var(--color-white);
 }
 
+.header-info {
+  min-height: 80px;
+  color: white;
+}
+
+.header-info .logo {
+  max-height: 90px;
+  width: auto;
+  object-fit: contain;
+}
+
+.header-info .title {
+  color: white;
+}
+
+.header-info small {
+  font-size: 0.85rem;
+  color: #ddd;
+}
+
 .login-button {
   background-color: var(--color-white);
   color: var(--color-secondary);
@@ -109,7 +129,7 @@ html, body, #root {
 .sidebar {
   width: 400px;
   background-color: var(--color-primary);
-  padding: 1rem;
+  /*padding: 1rem;*/
   border-right: 1px solid #ccc;
   color: var(--color-white);
   overflow-y: auto;

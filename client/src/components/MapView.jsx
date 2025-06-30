@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import { MdMyLocation, MdLocationCity } from "react-icons/md";
-
+import axios from "axios";
 import {MapContainer, TileLayer, Marker, Popup, useMap, useMapEvents} from "react-leaflet";
 import L from "leaflet";
 import {useAyuntamiento} from "../context/AyuntamientoContext";
@@ -75,8 +75,9 @@ export default function MapView({incidencias}) {
   const [direccion, setDireccion] = useState("");
   const [posUsuario, setPosUsuario] = useState(null);
 
+  const [estadosIncidencia, setEstadosIncidencia] = useState([]);
+
   const { ayuntamiento } = useAyuntamiento();
-  const { usuario } = useUser();
 
   const centroAyto = ayuntamiento?.coordenadasCentro?.coordinates
     ? [ayuntamiento.coordenadasCentro.coordinates[1], ayuntamiento.coordenadasCentro.coordinates[0]]
@@ -86,18 +87,17 @@ export default function MapView({incidencias}) {
   const [mapZoom, setMapZoom] = useState(13);
 
   useEffect(() => {
-  if (centroAyto) {
-    if (
-      center.lat !== centroAyto.lat ||
-      center.lng !== centroAyto.lng
-    ) {
-      setCenter(centroAyto);
-      setMapZoom(13);
+    obtenerEstados();
+    if (centroAyto) {
+      if (
+        center.lat !== centroAyto.lat ||
+        center.lng !== centroAyto.lng
+      ) {
+        setCenter(centroAyto);
+        setMapZoom(13);
+      }
     }
-  }
-  }, [centroAyto]);
 
-  useEffect(() => {
     if (!centroAyto && !posUsuario) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -150,6 +150,20 @@ export default function MapView({incidencias}) {
       console.error("Error obteniendo dirección:", err);
       setDireccion("No disponible");
     }
+  };
+
+  const obtenerEstados = async () => {
+    try {
+      const res = await axios.get(API_REST_CONSTANTS.ENDPOINTS.ESTADOS_INCIDENCIA);
+      setEstadosIncidencia(res.data);
+    } catch (error) {
+      console.error("Error al obtener estados de incidencia:", error);
+    }
+  };
+
+  const getNombreEstado = (idEstado) => {
+    const estado = estadosIncidencia.find((t) => t.idEstado === idEstado);
+    return estado ? estado.estadoIncidencia : "---";
   };
 
   const handleClose = () => {
@@ -205,51 +219,53 @@ export default function MapView({incidencias}) {
         />
         <AddMarkerOnClick onAdd={handleAddIncidencia} />
 
-      {incidencias.map((incidencia) => (
+        {incidencias.map((incidencia) => (
 
-        <Marker icon={obtenerIconoPorEstado(incidencia.estado)}
-          key={incidencia._id}
-          position={[
-            incidencia.coordenadas.coordinates[1],
-            incidencia.coordenadas.coordinates[0],
-          ]}
-        >
-        <Popup>
-          <div style={{ minWidth: "200px" }}>
-            <h6 style={{ marginBottom: "4px", fontWeight: "bold" }}>{incidencia.titulo}</h6>
-            <p style={{ fontSize: "0.9em", margin: 0 }}>
-              {incidencia.direccion}
-            </p>
+          <Marker icon={obtenerIconoPorEstado(incidencia.estado)}
+            key={incidencia._id}
+            position={[
+              incidencia.coordenadas.coordinates[1],
+              incidencia.coordenadas.coordinates[0],
+            ]}
+          >
+          <Popup>
+            <div style={{ minWidth: "200px" }}>
+              <h6 style={{ marginBottom: "4px", fontWeight: "bold" }}>{incidencia.titulo}</h6>
+              <p style={{ fontSize: "0.9em", margin: 0 }}>
+                {incidencia.direccion}
+                <br/>
+                <b>Estado:</b> {getNombreEstado(incidencia.estado)}
+              </p>
 
-          {incidencia.imagenes && incidencia.imagenes.length > 0 && (
-            <div
-              style={{
-                display: "flex",
-                overflowX: "auto",
-                gap: "8px",
-                marginTop: "8px",
-              }}
-            >
-              {incidencia.imagenes.map((imgUrl, idx) => (
-                <img
-                  key={idx}
-                  src={API_REST_CONSTANTS.ENDPOINTS.IMAGEN(imgUrl.url)}
-                  alt={`Imagen ${idx + 1}`}
-                  style={{
-                    width: "80px",
-                    height: "60px",
-                    objectFit: "cover",
-                    borderRadius: "6px",
-                    flex: "0 0 auto",
-                  }}
-                />
-              ))}
-            </div>
-          )}
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+            {incidencia.imagenes && incidencia.imagenes.length > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  overflowX: "auto",
+                  gap: "8px",
+                  marginTop: "8px",
+                }}
+              >
+                {incidencia.imagenes.map((imgUrl, idx) => (
+                  <img
+                    key={idx}
+                    src={API_REST_CONSTANTS.ENDPOINTS.IMAGEN(imgUrl.url)}
+                    alt={`Imagen ${idx + 1}`}
+                    style={{
+                      width: "80px",
+                      height: "60px",
+                      objectFit: "cover",
+                      borderRadius: "6px",
+                      flex: "0 0 auto",
+                    }}
+                  />
+                ))}
+              </div>
+            )}
+              </div>
+            </Popup>
+          </Marker>
+        ))}
 
         {posUsuario && (
           <Marker position={posUsuario} icon={userLocationIcon} />

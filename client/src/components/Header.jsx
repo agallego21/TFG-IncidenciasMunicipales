@@ -112,15 +112,36 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
         )}
 
         {ayuntamiento ? (
-          <div className="header-info">
+          <div
+            className="header-info d-flex gap-3"
+            style={{ alignItems: "stretch" }}
+          >
             {logoURL && (
               <img
                 src={logoURL}
                 alt={`Logo Ayuntamiento de ${ayuntamiento.municipio}`}
                 className="logo"
+                style={{
+                  height: "100%", 
+                  width: "auto",
+                  objectFit: "contain",
+                }}
               />
             )}
-            <span className="title">Ayuntamiento de {ayuntamiento.municipio}</span>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+              <span className="title d-block fs-5 fw-bold">
+                Ayuntamiento de {ayuntamiento.municipio}
+              </span>
+              <small className="d-block text-light mt-1">
+                {ayuntamiento.direccionPostal || "Dirección no disponible"}
+              </small>
+              <small className="d-block text-light">
+                Email: {ayuntamiento.correoElectronico || "---"}
+              </small>
+              <small className="d-block text-light">
+                Tel: {ayuntamiento.telefono || "---"} | Fax: {ayuntamiento.fax || "---"}
+              </small>
+            </div>
           </div>
         ) : (
           <div className="header-info">

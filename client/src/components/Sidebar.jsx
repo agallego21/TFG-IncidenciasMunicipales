@@ -80,14 +80,18 @@ export default function Sidebar({ visible, onClose, incidencias, incidenciasFilt
   };
 
   return (
-    <aside
-      className={`sidebar p-3 position-fixed start-0 shadow ${visible ? "d-block" : "d-none"} d-md-block`}
-      style={{
-        height: "calc(100vh - 100px)",
-        zIndex: 1050,
-        overflowY: "auto",
-      }}
-    >
+  <aside
+    className={`sidebar position-fixed start-0 shadow ${visible ? "d-block" : "d-none"} d-md-block`}
+    style={{
+      height: "calc(100vh - 100px)",
+      zIndex: 1050,
+      width: "100%",
+      maxWidth: "400px",
+      display: "flex",
+      flexDirection: "column",
+    }}
+  >
+  <div style={{ flex: 1, overflowY: "auto" }} className="p-3">
       <div className="d-flex justify-content-between align-items-center d-md-none mb-3">
         <Button className="btn-filtrar" onClick={onClose}>
           <FaTimes />
@@ -169,7 +173,7 @@ export default function Sidebar({ visible, onClose, incidencias, incidenciasFilt
       ) : (
         <p>No hay incidencias que mostrar</p>
       )}
-
+    </div>
       <Modal show={showModal} onHide={() => setShowModal(false)} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>Imágenes de la incidencia</Modal.Title>

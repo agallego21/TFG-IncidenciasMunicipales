@@ -115,8 +115,6 @@ export default function GestionUsuariosModal({ show, onHide }) {
   };
 
   const handleGuardar = async (formData) => {
-
-console.log(formData)
     try {
       if (formData.idUsuario) {
         // Edición
