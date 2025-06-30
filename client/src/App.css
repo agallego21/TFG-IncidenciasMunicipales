@@ -29,7 +29,7 @@ html, body, #root {
   flex: 1; 
   display: flex;
   overflow: hidden;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 100px);
 }
 
 /**Header**/
@@ -108,9 +108,11 @@ html, body, #root {
 
 /** MapView**/
 .map-view {
-  flex: 1;
+  flex-grow: 1;
+  margin-left: 400px;
   position: relative;
   overflow: hidden;
+  height: 100%;
 }
 
 .map-container {
@@ -129,18 +131,18 @@ html, body, #root {
 .sidebar {
   width: 400px;
   background-color: var(--color-primary);
-  /*padding: 1rem;*/
   border-right: 1px solid #ccc;
   color: var(--color-white);
   overflow-y: auto;
   transition: all 0.3s ease;
+  flex-shrink: 0;
 }
 
 .sidebar.hidden {
-  display: none;
   width: 0;
   padding: 0;
   border: none;
+  overflow: hidden;
 }
 
 .sidebar-title {

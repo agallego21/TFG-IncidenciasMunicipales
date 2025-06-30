@@ -90,8 +90,8 @@ export default function MapView({incidencias}) {
     obtenerEstados();
     if (centroAyto) {
       if (
-        center.lat !== centroAyto.lat ||
-        center.lng !== centroAyto.lng
+        center[0] !== centroAyto[0] || 
+        center[1] !== centroAyto[1]
       ) {
         setCenter(centroAyto);
         setMapZoom(13);
@@ -212,7 +212,7 @@ export default function MapView({incidencias}) {
         </button>
       )}
 
-      <MapContainer center={center} zoom={mapZoom} className="map-container" style={{ height: "98%" }}>
+      <MapContainer center={center} zoom={mapZoom} className="map-container" style={{height: "100%" }}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
