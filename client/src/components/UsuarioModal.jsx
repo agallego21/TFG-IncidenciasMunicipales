@@ -121,7 +121,7 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
           <Form.Group className="mb-3">
-            <Form.Label>Ayuntamiento</Form.Label>
+            <Form.Label className="label-campoForm">Ayuntamiento*</Form.Label>
             {usuarioConectado && usuarioConectado.tipoUsuario === 0 ? (
               <Form.Select
                 name="idAyuntamiento"
@@ -154,7 +154,7 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Tipo de usuario</Form.Label>
+            <Form.Label className="label-campoForm">Tipo de usuario*</Form.Label>
             <Form.Select name="tipoUsuario" value={formData.tipoUsuario} onChange={handleChange} required>
               <option value="">Selecciona un tipo</option>
               {tiposUsuario.map((tipoUsuario) => (
@@ -166,17 +166,17 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Nombre</Form.Label>
+            <Form.Label className="label-campoForm">Nombre*</Form.Label>
             <Form.Control name="nombre" value={formData.nombre} onChange={handleChange} required />
           </Form.Group>
 
           <Form.Group>
-            <Form.Label>Apellidos</Form.Label>
+            <Form.Label className="label-campoForm">Apellidos*</Form.Label>
             <Form.Control name="apellidos" value={formData.apellidos} onChange={handleChange} required />
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
+            <Form.Label className="label-campoForm">Email*</Form.Label>
             {esEdicion ? (
               // Mostrar email como texto estático, sin input
               <div className="form-control-plaintext">{formData.email}</div>
@@ -198,7 +198,7 @@ export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
 
           {!esEdicion && (
             <Form.Group className="mb-3">
-              <Form.Label>Contraseña</Form.Label>
+              <Form.Label className="label-campoForm">Contraseña*</Form.Label>
               <InputGroup>
                   <Form.Control
                   type={mostrarPassword ? "text" : "password"}

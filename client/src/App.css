@@ -54,6 +54,17 @@ html, body, #root {
   align-items: center;
   gap: 5px;
 }
+.dropdown-item:hover {
+  background-color: var(--color-card-bg);
+  color: inherit;
+}
+
+.dropdown-item:active, 
+.dropdown-item.active, 
+.dropdown-item.show {
+  background-color: var(--color-primary);
+  color: white;
+}
 
 .header-info .logo {
   max-height: 90px;

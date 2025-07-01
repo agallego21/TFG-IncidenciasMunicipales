@@ -130,7 +130,7 @@ const obtenerDireccion = async (lat, lng) => {
       <Modal.Body>
         <Form>
           <Form.Group controlId="formTitulo">
-            <Form.Label>Título*</Form.Label>
+            <Form.Label className="label-campoForm">Título*</Form.Label>
             <Form.Control
               type="text"
               name="titulo"
@@ -143,7 +143,7 @@ const obtenerDireccion = async (lat, lng) => {
           </Form.Group>
 
           <Form.Group controlId="formDescripcion" className="mt-3">
-            <Form.Label>Descripción*</Form.Label>
+            <Form.Label className="label-campoForm">Descripción*</Form.Label>
             <Form.Control
               as="textarea"
               name="descripcion"
@@ -156,7 +156,7 @@ const obtenerDireccion = async (lat, lng) => {
           </Form.Group>
 
           <Form.Group controlId="formTipo" className="mt-3">
-            <Form.Label>Tipo de incidencia*</Form.Label>
+            <Form.Label className="label-campoForm">Tipo de incidencia*</Form.Label>
               <Form.Select
                 name="tipoIncidencia"
                 value={formData.tipoIncidencia}
@@ -174,12 +174,12 @@ const obtenerDireccion = async (lat, lng) => {
           </Form.Group>
 
           <Form.Group className="mt-3">
-            <Form.Label>Dirección</Form.Label>
+            <Form.Label className="label-campoForm">Dirección</Form.Label>
             <Form.Control type="text" value={direccion} readOnly />
           </Form.Group>
 
           <Form.Group controlId="formImagen" className="mt-3">
-            <Form.Label>Adjuntar imagen</Form.Label>
+            <Form.Label className="label-campoForm">Adjuntar imagen</Form.Label>
             <Form.Control
               type="file"
               name="imagen"
@@ -197,7 +197,7 @@ const obtenerDireccion = async (lat, lng) => {
         <Button variant="secondary" onClick={handleClose} disabled={loading}>
           Cancelar
         </Button>
-        <Button variant="primary" onClick={handleSubmit} disabled={loading}>
+        <Button variant="primary" className="btn-success" onClick={handleSubmit} disabled={loading}>
           {loading ? "Guardando..." : "Registrar"}
         </Button>
       </Modal.Footer>
