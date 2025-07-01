@@ -88,6 +88,9 @@ export default function MapView({incidencias}) {
 
   useEffect(() => {
     obtenerEstados();
+  }, []);
+
+  useEffect(() => {
     if (centroAyto) {
       if (
         center[0] !== centroAyto[0] || 

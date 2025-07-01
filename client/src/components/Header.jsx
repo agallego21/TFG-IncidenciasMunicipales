@@ -7,6 +7,7 @@ import { UserContext } from "../context/UserContext";
 import { useAyuntamiento } from "../context/AyuntamientoContext";
 import UsuarioModal from "./UsuarioModal";
 import GestionAyuntamientosModal from "./GestionAyuntamientosModal";
+import AyuntamientoModal from "./AyuntamientoModal";
 import GestionUsuariosModal from "./GestionUsuariosModal";
 import GestionIncidenciasModal from "./GestionIncidenciasModal";
 import MiPerfilModal from "./MiPerfilModal";
@@ -15,12 +16,13 @@ import axios from 'axios';
 
 export default function Header({ onLoginClick, onToggleSidebar }) {
   const { usuario, logout } = useContext(UserContext);
-  const { ayuntamiento } = useAyuntamiento();
+  const { ayuntamiento, setAyuntamiento } = useAyuntamiento();
   const [showUsuarioModal, setShowUsuarioModal] = useState(false);
 
   const [showMiPerfil, setShowMiPerfil] = useState(false);
   
   const [showGestionAyuntamientos, setShowGestionAyuntamientos] = useState(false);
+  const [showMiAyuntamiento, setShowMiAyuntamiento] = useState(false);
   const [showGestionUsuarios, setShowGestionUsuarios] = useState(false);
   const [showGestionIncidencias, setShowGestionIncidencias] = useState(false);
 
@@ -54,6 +56,51 @@ export default function Header({ onLoginClick, onToggleSidebar }) {
       setTiposIncidencia(resTipos.data);
     } catch (err) {
       console.error("Error cargando datos de incidencias:", err);
+    }
+  };
+
+  const handleGuardarAyuntamiento = async (datos) => {
+    try {
+      const data = new FormData();
+      data.append("municipio", datos.municipio);
+      data.append("direccionPostal", datos.direccionPostal);
+      data.append("correoElectronico", datos.correoElectronico);
+      data.append("telefono", datos.telefono);
+      data.append("fax", datos.fax);
+
+      data.append(
+        "coordenadasCentro",
+        JSON.stringify({
+          type: "Point",
+          coordinates: [datos.coordenadasCentro.lng, datos.coordenadasCentro.lat],
+        })
+      );
+      data.append("tipo", "ayuntamientos");
+      if (datos.imagen) {
+        data.append("imagen", datos.imagen);
+      }
+
+
+
+      if (datos.idAyuntamiento) {
+        await axios.put(
+          `${API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS}/${datos.idAyuntamiento}`,
+          data,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+      }
+
+      setShowMiAyuntamiento(false);
+
+      axios.get(`${API_REST_CONSTANTS.ENDPOINTS.AYUNTAMIENTOS}/${datos.idAyuntamiento}`)
+        .then(res => setAyuntamiento(res.data))
+        .catch(err => console.error("Error cargando ayuntamiento:", err));
+
+      } catch (error) {
+      console.error("Error guardando ayuntamiento:", error);
+      alert("Error al guardar el ayuntamiento");
     }
   };
 
@@ -110,7 +157,7 @@ return (
                     </Dropdown.Item>
                   )}
                   {usuario.tipoUsuario === 1 && (
-                    <Dropdown.Item onClick={() => alert("FALTA")}>
+                    <Dropdown.Item onClick={() => setShowMiAyuntamiento(true)}>
                       Ver/editar mi ayuntamiento
                     </Dropdown.Item>
                   )}
@@ -169,6 +216,13 @@ return (
       <GestionAyuntamientosModal
         show={showGestionAyuntamientos}
         onHide={() => setShowGestionAyuntamientos(false)}
+      />
+
+      <AyuntamientoModal
+        show={showMiAyuntamiento}
+        handleClose={() => setShowMiAyuntamiento(false)}
+        onSubmit={handleGuardarAyuntamiento}
+        ayuntamiento={ayuntamiento}
       />
 
       <GestionUsuariosModal

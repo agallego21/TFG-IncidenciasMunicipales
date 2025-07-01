@@ -88,6 +88,7 @@ exports.actualizarAyuntamiento = async (req, res) => {
     
     const ayuntamientoData = { fechaModif: new Date() };
 
+    if (req.body.municipio) ayuntamientoData.municipio = req.body.municipio;
     if (req.body.direccionPostal) ayuntamientoData.direccionPostal = req.body.direccionPostal;
     if (req.body.correoElectronico) ayuntamientoData.correoElectronico = req.body.correoElectronico;
     if (req.body.telefono) ayuntamientoData.telefono = req.body.telefono;

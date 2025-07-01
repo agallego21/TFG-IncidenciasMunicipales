@@ -28,7 +28,7 @@ export function AyuntamientoProvider({ children }) {
   }, [searchParams]);
 
   return (
-    <AyuntamientoContext.Provider value={{ ayuntamiento, showLoginOnStart, setShowLoginOnStart }}>
+    <AyuntamientoContext.Provider value={{ ayuntamiento, setAyuntamiento, showLoginOnStart, setShowLoginOnStart }}>
       {children}
     </AyuntamientoContext.Provider>
   );
