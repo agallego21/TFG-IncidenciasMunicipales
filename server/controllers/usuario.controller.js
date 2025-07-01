@@ -57,11 +57,21 @@ const crearUsuario = async (req, res) => {
 const actualizarUsuario = async (req, res) => {
   try {
     const { idUsuario } = req.params;
+
+    const updateData = { ...req.body };
+
+    // Si viene contraseña, hacer hash antes de actualizar
+    if (updateData.password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(updateData.password, salt);
+    }
+
     const actualizado = await Usuario.findOneAndUpdate(
       { idUsuario: Number(idUsuario) },
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
+    
     if (!actualizado) return res.status(404).json({ error: "Usuario no encontrado" });
     res.json(actualizado);
   } catch (error) {

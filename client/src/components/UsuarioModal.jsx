@@ -7,8 +7,7 @@ import { API_REST_CONSTANTS } from "../config/api";
 
 export default function UsuarioModal({ show, handleClose, onSubmit, usuario }) {
   const esEdicion = usuario && usuario.idUsuario !== undefined;
-const { usuario: usuarioConectado } = useUser();
-//    if (!usuarioConectado) return null;
+  const { usuario: usuarioConectado } = useUser();
 
   const [ayuntamientos, setAyuntamientos] = useState([]);
   const [tiposUsuario, setTiposUsuario] = useState([]);

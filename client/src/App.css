@@ -49,6 +49,12 @@ html, body, #root {
   color: white;
 }
 
+.header .dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .header-info .logo {
   max-height: 90px;
   width: auto;
