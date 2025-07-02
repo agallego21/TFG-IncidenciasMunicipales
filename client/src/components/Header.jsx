@@ -131,8 +131,7 @@ return (
             Ayuntamiento de {ayuntamiento?.municipio || "..." }
           </div>
           <small className="d-block">{ayuntamiento?.direccionPostal || "Dirección no disponible"}</small>
-          <small className="d-block">Email: {ayuntamiento?.correoElectronico || "---"}</small>
-          <small className="d-block">Tel: {ayuntamiento?.telefono || "---"} | Fax: {ayuntamiento?.fax || "---"}</small>
+          <small className="d-block"><b>Email:</b> {ayuntamiento?.correoElectronico || "---"} <b>Tel:</b> {ayuntamiento?.telefono || "---"} | <b>Fax:</b> {ayuntamiento?.fax || "---"}</small>
         </div>
       </div>
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { UserContext } from "../context/UserContext";
@@ -15,12 +15,21 @@ export default function MiPerfilModal({ show, onHide }) {
   const [password, setPassword] = useState("");
   const [mostrarPassword, setMostrarPassword] = useState(false);
 
-  const tipoUsuarioTexto = {
-    0: "Administrador general",
-    1: "Administrador de ayuntamiento",
-    2: "Gestor de incidencias",
-    3: "Usuario ciudadano",
-  };
+  const [tiposUsuario, setTiposUsuario] = useState([]);
+
+  // Cargar tipos de usuario
+    useEffect(() => {
+      async function obtenerTiposUsuario() {
+        try {
+          const res = await axios.get(API_REST_CONSTANTS.ENDPOINTS.TIPOS_USUARIO);
+          setTiposUsuario(res.data);
+        } catch (error) {
+          console.error("Error al cargar tipos de usuario:", error);
+        }
+      }
+  
+      obtenerTiposUsuario();
+    }, []);
 
   const handleGuardar = async () => {
     try {
@@ -67,7 +76,7 @@ export default function MiPerfilModal({ show, onHide }) {
             <Form.Control
               plaintext
               readOnly
-              defaultValue={tipoUsuarioTexto[usuario?.tipoUsuario]}
+              defaultValue= {tiposUsuario.find(tipo => tipo.idTipo === usuario.tipoUsuario)?.tipoUsuario || "Desconocido"}
             />
           </Form.Group>
 
