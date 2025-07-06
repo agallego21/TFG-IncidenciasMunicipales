@@ -193,13 +193,15 @@ export default function GestionUsuariosModal({ show, onHide }) {
                 </Form.Select>
               </Form.Group>
             )}
-            <Button variant="primary" 
-              onClick={handleNuevoUsuario} 
-              className="btn-success ms-auto" 
-              style={{ alignSelf: "flex-start" }
-            }>
-              Nuevo Usuario
-            </Button>
+            {(usuario?.tipoUsuario !== 2) && (
+              <Button variant="primary" 
+                onClick={handleNuevoUsuario} 
+                className="btn-success ms-auto" 
+                style={{ alignSelf: "flex-start" }
+              }>
+                Nuevo Usuario
+              </Button>
+            )}
           </Form>
 
           <Table striped bordered hover responsive className="small">
@@ -221,34 +223,51 @@ export default function GestionUsuariosModal({ show, onHide }) {
                   </td>
                 </tr>
               ) : (
-                usuariosPaginados.map((usuario) => (
-                  <tr key={usuario.idUsuario}>
-                    <td>{usuario.nombre}</td>
-                    <td>{usuario.apellidos}</td>
-                    <td>{usuario.email}</td>
+                usuariosPaginados.map((user) => (
+                  <tr key={user.idUsuario}>
+                    <td>{user.nombre}</td>
+                    <td>{user.apellidos}</td>
+                    <td>{user.email}</td>
                     <td>
-                      {tiposUsuario.find(tipo => tipo.idTipo === usuario.tipoUsuario)?.tipoUsuario || "Desconocido"}
+                      {tiposUsuario.find(tipo => tipo.idTipo === user.tipoUsuario)?.tipoUsuario || "Desconocido"}
                     </td>
                     <td>
-                        {listaAyuntamientos.find(a => a.idAyuntamiento === usuario.idAyuntamiento)?.municipio || "-"}
+                        {listaAyuntamientos.find(a => a.idAyuntamiento === user.idAyuntamiento)?.municipio || "-"}
                     </td>
                     <td>
+                    {(usuario?.tipoUsuario !== 2) ? (
                       <Button 
                         className="btn btn-link p-0 me-2 btn-primary-icon" 
                         title="Editar" 
-                        onClick={() => handleEditarUsuario(usuario)}
-  
+                        onClick={() => handleEditarUsuario(user)}
                       >
                         <FaEdit size={18} />
                       </Button>
-  
+                    ) : (
+                        <FaEdit
+                            size={18}
+                            className="text-secondary me-2"
+                            title="Sin imágenes"
+                            style={{ opacity: 0.5, cursor: "not-allowed" }}
+                        />
+                    )}  
+
+                    {(usuario?.tipoUsuario !== 2) ? (
                       <Button 
                         className="btn btn-link p-0 me-2 btn-primary-icon" 
                         title="eliminar" 
-                        onClick={() => handleEliminarUsuario(usuario)}
+                        onClick={() => handleEliminarUsuario(user)}
                       >
                         <FaTrash size={18} />
                       </Button>
+                    ) : (
+                        <FaTrash
+                            size={18}
+                            className="text-secondary me-2"
+                            title="Sin imágenes"
+                            style={{ opacity: 0.5, cursor: "not-allowed" }}
+                        />
+                    )}  
                     </td>
                   </tr>
                 ))
