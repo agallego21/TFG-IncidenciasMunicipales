@@ -1,14 +1,8 @@
 # 🏙️ Desarrollo de un portal web para la colaboración ciudadana en la identificación y comunicación a Ayuntamientos de incidencias urbanas
-### Trabajo Fin de Grado – Grado en Ingeniería Informática
-### Universidad Internacional de La Rioja
-### Escuela Superior de Ingeniería y Tecnología 
-
-
-
-## 👤 Autor
-### Antonio Gallego Tejado
-
-
+**👤 Autor** Antonio Gallego Tejado
+**Trabajo Fin de Grado – Grado en Ingeniería Informática**
+Universidad Internacional de La Rioja
+Escuela Superior de Ingeniería y Tecnología 
 
 ## 📄 Licencia
 Este proyecto está licenciado bajo la MIT License.
