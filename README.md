@@ -1,5 +1,14 @@
 # 🏙️ Desarrollo de un portal web para la colaboración ciudadana en la identificación y comunicación a Ayuntamientos de incidencias urbanas
 
+👤 Autor
+Antonio Gallego Tejado
+Trabajo Fin de Grado – Grado en Ingeniería Informática
+Universidad Internacional de La Rioja
+Escuela Superior de Ingeniería y Tecnología 
+
+📄 Licencia
+Este proyecto está licenciado bajo la MIT License.
+
 ## 📌 Descripción del proyecto
 
 En la actualidad, las Tecnologías de la Información y la Comunicación (TIC) juegan un papel fundamental en la transformación de la Administración pública, acercándola a los ciudadanos y contribuyendo a una mayor participación de estos en las labores de gobernanza. En este contexto, la participación ciudadana se erige como un elemento fundamental para la transformación de las ciudades en espacios más sostenibles y habitables.
@@ -20,7 +29,6 @@ Proyecto desarrollado con **MERN Stack**:
 - 🌐 Node.js + Express (backend)
 - 🍃 MongoDB (base de datos)
 - 🗺️ Leaflet + react-leaflet (geolocalización y mapas)
-- 🎨 Tailwind CSS (estilos)
 
 ---
 
@@ -41,7 +49,7 @@ Proyecto desarrollado con **MERN Stack**:
 
 ```bash
 # Clona el repositorio
-git clone https://github.com/tu-usuario/nombre-del-repo.git
+git clone https://github.com/agallego21/TFG-IncidenciasMunicipales.git
 
 # Entra en la carpeta del backend
 cd backend
@@ -53,3 +61,4 @@ npm install
 
 # Inicia el servidor
 npm run dev
+
