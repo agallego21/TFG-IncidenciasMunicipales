@@ -60,6 +60,7 @@ npm install
 
 # Arrancar el servidor
 nodemon server.js
+```
 
 ### Frontend
 
@@ -71,4 +72,5 @@ cd client
 npm install
 
 # Arrancar el servidor
-npm run dev 
+npm run dev
+```
