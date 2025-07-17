@@ -47,10 +47,10 @@ Proyecto desarrollado con **MERN Stack**:
 
 ## 🚀 Instalación y ejecución local
 
-### Backend
-# Clona el repositorio
+### Clona el repositorio
 git clone https://github.com/agallego21/TFG-IncidenciasMunicipales.git
 
+### Backend
 ```bash
 # Entra en la carpeta del backend
 cd server
