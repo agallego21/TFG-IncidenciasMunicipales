@@ -48,19 +48,27 @@ Proyecto desarrollado con **MERN Stack**:
 ## 🚀 Instalación y ejecución local
 
 ### Backend
-
-```bash
 # Clona el repositorio
 git clone https://github.com/agallego21/TFG-IncidenciasMunicipales.git
 
+```bash
 # Entra en la carpeta del backend
-cd backend
+cd server
 
 # Instala dependencias
 npm install
 
-# Crea un archivo .env con tus variables (Mongo URI, puerto, etc.)
+# Arrancar el servidor
+nodemon server.js
 
-# Inicia el servidor
-npm run dev
+### Frontend
 
+```bash
+# Entra en la carpeta del frontend
+cd client
+
+# Instala dependencias
+npm install
+
+# Arrancar el servidor
+npm run dev 
