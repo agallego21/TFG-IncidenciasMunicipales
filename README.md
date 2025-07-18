@@ -74,3 +74,43 @@ npm install
 # Arrancar el servidor
 npm run dev
 ```
+
+## 📦 Dependencias del proyecto
+
+### 🔧 Backend (`/server`)
+
+| Paquete     | Versión   | Descripción                                         |
+|-------------|-----------|-----------------------------------------------------|
+| `express`   | 5.1.0     | Framework web para Node.js                          |
+| `mongoose`  | 8.14.1    | ODM para conectar con MongoDB desde Node.js         |
+| `bcrypt`    | 6.0.0     | Cifrado de contraseñas                              |
+| `cors`      | 2.8.5     | Middleware para habilitar CORS                      |
+| `multer`    | 2.0.1     | Middleware para subir archivos                      |
+
+---
+
+### 💻 Frontend (`/client`)
+
+| Paquete                          | Versión   | Descripción                                         |
+|----------------------------------|-----------|-----------------------------------------------------|
+| `react`                          | 19.1.0    | Librería para construir interfaces de usuario       |
+| `react-dom`                      | 19.1.0    | Soporte DOM para React                              |
+| `react-router-dom`               | 7.6.1     | Enrutamiento en React                               |
+| `axios`                          | 1.9.0     | Cliente HTTP para consumir APIs                     |
+| `vite`                           | 6.3.4     | Empaquetador moderno y rápido para proyectos web    |
+| `@vitejs/plugin-react`           | 4.4.1     | Plugin oficial de React para Vite                   |
+| `bootstrap`                      | 5.3.6     | Framework de estilos CSS                            |
+| `react-bootstrap`                | 2.10.10   | Componentes de Bootstrap adaptados a React          |
+| `react-icons`                    | 5.5.0     | Colección de iconos para React                      |
+| `leaflet`                        | 1.9.4     | Librería de mapas interactivos                      |
+| `react-leaflet`                  | 5.0.0     | Envoltorio de Leaflet para React                    |
+| `leaflet-color-markers`          | 0.1.0     | Marcadores personalizados para Leaflet              |
+| `@types/react`                   | 19.1.2    | Tipado de React para TypeScript                     |
+| `@types/react-dom`               | 19.1.3    | Tipado de React DOM para TypeScript                 |
+| `eslint`                         | 9.26.0    | Linter de JavaScript                                |
+| `@eslint/js`                     | 9.26.0    | Configuración base para ESLint                      |
+| `eslint-plugin-react-hooks`      | 5.2.0     | Reglas de ESLint para hooks de React                |
+| `eslint-plugin-react-refresh`    | 0.4.20    | Reglas para hot reload con React Refresh            |
+| `globals`                        | 16.0.0    | Conjuntos de variables globales para linters        |
+
+---
